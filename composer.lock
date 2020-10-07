@@ -1,0 +1,134 @@
+{
+    "_readme": [
+        "This file locks the dependencies of your project to a known state",
+        "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
+        "This file is @generated automatically"
+    ],
+    "content-hash": "9aedf0f0dd737f20392914158e8366bd",
+    "packages": [
+        {
+            "name": "mmdm/sim-cookie",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mmdm95/sim-cookie.git",
+                "reference": "09182237ec32f8c4cf43a4ebaa41f025cb24655b"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mmdm95/sim-cookie/zipball/09182237ec32f8c4cf43a4ebaa41f025cb24655b",
+                "reference": "09182237ec32f8c4cf43a4ebaa41f025cb24655b",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "mmdm/sim-crypt": "^1.0",
+                "php": ">=7.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sim\\Cookie\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "MMDM",
+                    "email": "mmdehghan95@gmail.com"
+                }
+            ],
+            "description": "A simple yet nice cookie management library",
+            "time": "2020-10-05T22:47:09+00:00"
+        },
+        {
+            "name": "mmdm/sim-crypt",
+            "version": "v1.0.1",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mmdm95/sim-crypt.git",
+                "reference": "7146a94e9e1e1fd558f3ca1cab50e31a18ec4ee5"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mmdm95/sim-crypt/zipball/7146a94e9e1e1fd558f3ca1cab50e31a18ec4ee5",
+                "reference": "7146a94e9e1e1fd558f3ca1cab50e31a18ec4ee5",
+                "shasum": ""
+            },
+            "require": {
+                "ext-openssl": "*",
+                "php": ">=7.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sim\\Crypt\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "MMDM",
+                    "email": "mmdehghan95@gmail.com"
+                }
+            ],
+            "description": "A simple yet nice encryption/decryption library",
+            "time": "2020-10-05T22:15:19+00:00"
+        },
+        {
+            "name": "mmdm/sim-session",
+            "version": "v1.1.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/mmdm95/sim-session.git",
+                "reference": "57c49a4b34d4b7827d4b3a6d0e7f0f45d3d1ade2"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/mmdm95/sim-session/zipball/57c49a4b34d4b7827d4b3a6d0e7f0f45d3d1ade2",
+                "reference": "57c49a4b34d4b7827d4b3a6d0e7f0f45d3d1ade2",
+                "shasum": ""
+            },
+            "require": {
+                "ext-json": "*",
+                "mmdm/sim-crypt": "^1.0",
+                "php": ">=7.2"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Sim\\Session\\": "src/"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "MIT"
+            ],
+            "authors": [
+                {
+                    "name": "MMDM",
+                    "email": "mmdehghan95@gmail.com"
+                }
+            ],
+            "description": "A simple yet nice session management library",
+            "time": "2020-10-06T11:59:29+00:00"
+        }
+    ],
+    "packages-dev": [],
+    "aliases": [],
+    "minimum-stability": "stable",
+    "stability-flags": [],
+    "prefer-stable": false,
+    "prefer-lowest": false,
+    "platform": {
+        "php": ">=7.2"
+    },
+    "platform-dev": [],
+    "plugin-api-version": "1.1.0"
+}

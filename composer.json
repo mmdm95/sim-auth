@@ -1,0 +1,22 @@
+{
+    "name": "mmdm/sim-auth",
+    "description": "A simple yet nice authentication library",
+    "type": "library",
+    "license": "MIT",
+    "authors": [
+        {
+            "name": "MMDM",
+            "email": "mmdehghan95@gmail.com"
+        }
+    ],
+    "autoload": {
+        "psr-4": {
+            "Sim\\Auth\\": "src/"
+        }
+    },
+    "require": {
+        "php": ">=7.2",
+        "mmdm/sim-session": "^1.0",
+        "mmdm/sim-cookie": "^1.0"
+    }
+}
