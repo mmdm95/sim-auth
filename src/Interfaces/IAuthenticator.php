@@ -13,11 +13,10 @@ interface IAuthenticator
      *   'password' => provided password,
      * ]
      *
-     * @param array $credentials
      * @param string|null $extra_query
      * @return static
      */
-    public function login(array $credentials, string $extra_query = null);
+    public function login(string $extra_query = null);
 
     /**
      * @param int $id
