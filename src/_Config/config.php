@@ -6,7 +6,6 @@
  */
 return [
     'blueprints' => [
-
         /**
          * lib table alias name => [
          *   'table_name' => actual table's name
@@ -114,18 +113,4 @@ return [
             ],
         ],
     ],
-    /**
-     * All not admin roles.
-     * ATTENTION: NOT ADMIN ROLES
-     *
-     * It'll fill database when you run [up] method
-     */
-    'roles' => [],
-    /**
-     * All admin roles.
-     * ATTENTION: ADMIN ROLES
-     *
-     * It'll fill database when you run [up] method
-     */
-    'admin_roles' => [],
 ];
