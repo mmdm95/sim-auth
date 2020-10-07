@@ -3,6 +3,7 @@
 namespace Sim\Auth\Abstracts;
 
 use InvalidArgumentException;
+use PDO;
 use Sim\Auth\Exceptions\InvalidStorageTypeException;
 use Sim\Auth\Interfaces\IAuth;
 use Sim\Auth\Interfaces\IAuthenticator;
@@ -17,6 +18,11 @@ abstract class AbstractAuth implements
     IPage,
     IRole
 {
+    /**
+     * @var PDO $pdo
+     */
+    protected $pdo;
+
     /**
      * @var array $credentials
      */
@@ -66,17 +72,21 @@ abstract class AbstractAuth implements
 
     /**
      * AbstractAuth constructor.
+     * @param PDO $pdo_instance
      * @param array $credentials
      * @param array|null $config
      * @param int $storage_type
      * @throws IAuthException
      */
     public function __construct(
+        PDO $pdo_instance,
         array $credentials,
         ?array $config = null,
         int $storage_type = IAuth::STORAGE_COOKIE
     )
     {
+        $this->pdo = $pdo_instance;
+
         if (empty($credentials)) {
             throw new InvalidArgumentException('Please fill credentials array.');
         }
@@ -227,6 +237,13 @@ abstract class AbstractAuth implements
         return $this->namespace;
     }
 
+    /**
+     * {@inheritdoc}
+     */
+    public function destroySession(string $session_id)
+    {
+        return $this;
+    }
 
     /**
      * {@inheritdoc}
