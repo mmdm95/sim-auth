@@ -15,7 +15,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Abstracts/AbstractAuth.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2685">
+            <state relative-caret-position="4684">
               <caret line="237" selection-start-line="237" selection-end-line="237" />
               <folding>
                 <element signature="e#38#67#0#PHP" expanded="true" />
@@ -27,7 +27,7 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/DBAuth.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="298">
+            <state relative-caret-position="360">
               <caret line="39" column="5" lean-forward="true" selection-start-line="39" selection-start-column="5" selection-end-line="39" selection-end-column="5" />
               <folding>
                 <element signature="e#28#36#0#PHP" expanded="true" />
@@ -39,17 +39,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/_Config/config.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="305">
-              <caret line="108" column="100" selection-start-line="108" selection-start-column="100" selection-end-line="108" selection-end-column="100" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Interfaces/IAuthorizer.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="345">
-              <caret line="15" column="57" lean-forward="true" selection-start-line="15" selection-start-column="57" selection-end-line="15" selection-end-column="57" />
+            <state relative-caret-position="143">
+              <caret line="93" column="24" lean-forward="true" selection-start-line="93" selection-start-column="24" selection-end-line="93" selection-end-column="24" />
             </state>
           </provider>
         </entry>
@@ -57,8 +48,8 @@
       <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/Interfaces/IStorage.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="138">
-              <caret line="6" selection-start-line="6" selection-end-line="6" />
+            <state relative-caret-position="414">
+              <caret line="21" column="37" selection-start-line="21" selection-start-column="37" selection-end-line="21" selection-end-column="37" />
             </state>
           </provider>
         </entry>
@@ -100,7 +91,6 @@
         <option value="$PROJECT_DIR$/src/config.php" />
         <option value="$PROJECT_DIR$/src/Exceptions/InvalidStorageTypeException.php" />
         <option value="$PROJECT_DIR$/src/Storages/SessionStorage.php" />
-        <option value="$PROJECT_DIR$/src/Interfaces/IStorage.php" />
         <option value="$PROJECT_DIR$/src/Storage/SessionStorage.php" />
         <option value="$PROJECT_DIR$/src/Storage/CookieStorage.php" />
         <option value="$PROJECT_DIR$/src/Storage/DBStorage.php" />
@@ -115,6 +105,8 @@
         <option value="$PROJECT_DIR$/src/Interfaces/IAuthenticator.php" />
         <option value="$PROJECT_DIR$/src/DBAuth.php" />
         <option value="$PROJECT_DIR$/src/Interfaces/IAuthorizer.php" />
+        <option value="$PROJECT_DIR$/README.md" />
+        <option value="$PROJECT_DIR$/src/Interfaces/IStorage.php" />
       </list>
     </option>
   </component>
@@ -166,6 +158,17 @@
               <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="Storage" type="462c0819:PsiDirectoryNode" />
             </path>
+            <path>
+              <item name="sim-auth" type="b2602c69:ProjectViewProjectNode" />
+              <item name="sim-auth" type="462c0819:PsiDirectoryNode" />
+              <item name="vendor" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="sim-auth" type="b2602c69:ProjectViewProjectNode" />
+              <item name="sim-auth" type="462c0819:PsiDirectoryNode" />
+              <item name="vendor" type="462c0819:PsiDirectoryNode" />
+              <item name="mmdm" type="462c0819:PsiDirectoryNode" />
+            </path>
           </expand>
           <select />
         </subPane>
@@ -214,12 +217,12 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1601861166326</updated>
-      <workItem from="1601861168710" duration="41300000" />
+      <workItem from="1601861168710" duration="43084000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="41300000" />
+    <option name="totallyTimeSpent" value="43084000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -235,7 +238,7 @@
     <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.17449665" />
+      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.17449665" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Docker" order="0" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="1" />
@@ -264,14 +267,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="46">
           <caret line="2" column="23" selection-start-line="2" selection-start-column="23" selection-end-line="2" selection-end-column="23" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/README.md">
-      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
-        <state split_layout="SPLIT">
-          <first_editor />
-          <second_editor />
         </state>
       </provider>
     </entry>
@@ -453,33 +448,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Abstracts/AbstractAuth.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2685">
-          <caret line="237" selection-start-line="237" selection-end-line="237" />
-          <folding>
-            <element signature="e#38#67#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/DBAuth.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="298">
-          <caret line="39" column="5" lean-forward="true" selection-start-line="39" selection-start-column="5" selection-end-line="39" selection-end-column="5" />
-          <folding>
-            <element signature="e#28#36#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/_Config/config.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="305">
-          <caret line="108" column="100" selection-start-line="108" selection-start-column="100" selection-end-line="108" selection-end-column="100" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Interfaces/IAuthenticator.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="368">
@@ -501,10 +469,20 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Storage/CookieStorage.php">
+    <entry file="file://$PROJECT_DIR$/src/Storage/DBStorage.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="6" column="19" selection-start-line="6" selection-start-column="19" selection-end-line="6" selection-end-column="19" />
+        <state relative-caret-position="184">
+          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/README.md">
+      <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
+        <state split_layout="SPLIT">
+          <first_editor relative-caret-position="232">
+            <caret line="18" column="23" lean-forward="true" selection-start-line="18" selection-start-column="23" selection-end-line="18" selection-end-column="23" />
+          </first_editor>
+          <second_editor />
         </state>
       </provider>
     </entry>
@@ -515,10 +493,30 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Storage/DBStorage.php">
+    <entry file="file://$PROJECT_DIR$/src/Storage/CookieStorage.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="184">
-          <caret line="8" lean-forward="true" selection-start-line="8" selection-end-line="8" />
+        <state relative-caret-position="138">
+          <caret line="6" column="19" selection-start-line="6" selection-start-column="19" selection-end-line="6" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Abstracts/AbstractAuth.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="4684">
+          <caret line="237" selection-start-line="237" selection-end-line="237" />
+          <folding>
+            <element signature="e#38#67#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/DBAuth.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="360">
+          <caret line="39" column="5" lean-forward="true" selection-start-line="39" selection-start-column="5" selection-end-line="39" selection-end-column="5" />
+          <folding>
+            <element signature="e#28#36#0#PHP" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
@@ -529,10 +527,17 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/src/_Config/config.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="143">
+          <caret line="93" column="24" lean-forward="true" selection-start-line="93" selection-start-column="24" selection-end-line="93" selection-end-column="24" />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/src/Interfaces/IStorage.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="138">
-          <caret line="6" selection-start-line="6" selection-end-line="6" />
+        <state relative-caret-position="414">
+          <caret line="21" column="37" selection-start-line="21" selection-start-column="37" selection-end-line="21" selection-end-column="37" />
         </state>
       </provider>
     </entry>
