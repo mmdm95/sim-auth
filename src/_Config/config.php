@@ -5,6 +5,20 @@
  * any problem :)
  */
 return [
+    'credential_columns' => [
+        /**
+         * [
+         *  'username' => actual username column,
+         *  'password' => actual password column,
+         * ]
+         *
+         * Note:
+         *   Please do not change keys and just
+         *   change values of them
+         */
+        'username' => 'username',
+        'password' => 'password',
+    ],
     'blueprints' => [
         /**
          * lib table alias name => [
@@ -25,10 +39,12 @@ return [
         'users' => [
             'table_name' => 'users',
             'columns' => [
-                'id'
+                'id', 'username', 'password',
             ],
             'types' => [
                 'id' => 'INT(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
+                'username' => 'VARCHAR(20) NOT NULL',
+                'password' => 'VARCHAR(192) NOT NULL',
             ]
         ],
         'roles' => [
@@ -110,6 +126,7 @@ return [
             'types' => [
                 'id' => 'INT(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
                 'user_id' => 'INT(11) UNSIGNED NOT NULL',
+
             ],
         ],
     ],
