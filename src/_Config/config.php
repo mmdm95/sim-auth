@@ -3,6 +3,11 @@
 /**
  * Please do not change keys to prevent
  * any problem :)
+ *
+ * Follow this rule and you'll never have
+ * problem with auth class:
+ * -- DO NOT CHANGE ANY KEY, JUST CHANGE VALUES --
+ *
  */
 return [
     'credential_columns' => [
@@ -39,7 +44,9 @@ return [
         'users' => [
             'table_name' => 'users',
             'columns' => [
-                'id', 'username', 'password',
+                'id' => 'id',
+                'username' => 'username',
+                'password' => 'password',
             ],
             'types' => [
                 'id' => 'INT(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
@@ -53,7 +60,10 @@ return [
         'roles' => [
             'table_name' => 'roles',
             'columns' => [
-                'id', 'name', 'description', 'is_admin'
+                'id' => 'id',
+                'name' => 'name',
+                'description' => 'description',
+                'is_admin' => 'is_admin'
             ],
             'types' => [
                 'id' => 'INT(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
@@ -62,10 +72,12 @@ return [
                 'is_admin' => 'TINYINT(1) UNSIGNED NOT NULL DEFAULT 0',
             ],
         ],
-        'pages' => [
-            'table_name' => 'pages',
+        'resources' => [
+            'table_name' => 'resources',
             'columns' => [
-                'id', 'name', 'description',
+                'id' => 'id',
+                'name' => 'name',
+                'description' => 'description',
             ],
             'types' => [
                 'id' => 'INT(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
@@ -76,7 +88,9 @@ return [
         'user_role' => [
             'table_name' => 'user_role',
             'columns' => [
-                'id', 'user_id', 'role_id',
+                'id' => 'id',
+                'user_id' => 'user_id',
+                'role_id' => 'role_id',
             ],
             'types' => [
                 'id' => 'INT(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
@@ -88,48 +102,67 @@ return [
                 'ADD CONSTRAINT fk_urp_r FOREIGN KEY(role_id) REFERENCES roles(id)',
             ],
         ],
-        'role_page_perm' => [
-            'table_name' => 'role_page_perm',
+        'role_res_perm' => [
+            'table_name' => 'role_res_perm',
             'columns' => [
-                'id', 'role_id', 'page_id', 'perm_id',
+                'id' => 'id',
+                'role_id' => 'role_id',
+                'resource_id' => 'resource_id',
+                'perm_id' => 'perm_id',
             ],
             'types' => [
                 'id' => 'INT(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
                 'role_id' => 'INT(11) UNSIGNED NOT NULL',
-                'page_id' => 'INT(11) UNSIGNED NOT NULL',
+                'resource_id' => 'INT(11) UNSIGNED NOT NULL',
                 'perm_id' => 'INT(11) UNSIGNED NOT NULL',
             ],
             'constraints' => [
                 'ADD CONSTRAINT fk_rpp_r FOREIGN KEY(role_id) REFERENCES roles(id)',
-                'ADD CONSTRAINT fk_rpp_pa FOREIGN KEY(page_id) REFERENCES pages(id)',
+                'ADD CONSTRAINT fk_rpp_pa FOREIGN KEY(resource_id) REFERENCES resources(id)',
             ],
         ],
-        'user_page_perm' => [
-            'table_name' => 'user_page_perm',
+        'user_res_perm' => [
+            'table_name' => 'user_res_perm',
             'columns' => [
-                'id', 'user_id', 'page_id', 'perm_id', 'is_allow'
+                'id' => 'id',
+                'user_id' => 'user_id',
+                'resource_id' => 'resource_id',
+                'perm_id' => 'perm_id',
+                'is_allow' => 'is_allow',
             ],
             'types' => [
                 'id' => 'INT(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
                 'user_id' => 'INT(11) UNSIGNED NOT NULL',
-                'page_id' => 'INT(11) UNSIGNED NOT NULL',
+                'resource_id' => 'INT(11) UNSIGNED NOT NULL',
                 'perm_id' => 'INT(11) UNSIGNED NOT NULL',
                 'is_allow' => 'TINYINT(1) UNSIGNED NOT NULL DEFAULT 1',
             ],
             'constraints' => [
                 'ADD CONSTRAINT fk_upp_u FOREIGN KEY(user_id) REFERENCES users(id)',
-                'ADD CONSTRAINT fk_upp_pa FOREIGN KEY(page_id) REFERENCES pages(id)',
+                'ADD CONSTRAINT fk_upp_pa FOREIGN KEY(resource_id) REFERENCES resources(id)',
             ],
         ],
         'sessions' => [
             'table_name' => 'sessions',
             'columns' => [
-                'id', 'uuid', 'user_id', 'ip_address', 'device', 'browser', 'expire_at', 'created_at'
+                'id' => 'id',
+                'uuid' => 'uuid',
+                'user_id' => 'user_id',
+                'ip_address' => 'ip_address',
+                'device' => 'device',
+                'browser' => 'browser',
+                'expire_at' => 'expire_at',
+                'created_at' => 'created_at',
             ],
             'types' => [
                 'id' => 'INT(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
+                'uuid' => 'VARCHAR(192)',
                 'user_id' => 'INT(11) UNSIGNED NOT NULL',
-
+                'ip_address' => 'VARCHAR(16)',
+                'device' => 'TEXT',
+                'browser' => 'TEXT',
+                'expire_at' => 'INT(11) UNSIGNED',
+                'created_at' => 'INT(11) UNSIGNED',
             ],
         ],
     ],
