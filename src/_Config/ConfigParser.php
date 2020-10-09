@@ -63,14 +63,19 @@ class ConfigParser
      * @var array
      */
     protected $table_aliases = [
-        'users', 'roles', 'pages', 'user_role',
-        'role_page_perm', 'user_page_perm', 'sessions'
+        'users', 'roles', 'resources', 'user_role',
+        'role_res_perm', 'user_res_perm', 'sessions'
     ];
 
     /**
      * @var array
      */
     protected $tables = [];
+
+    /**
+     * @var array
+     */
+    protected $tables_columns = [];
 
     /**
      * @var array
@@ -134,6 +139,33 @@ class ConfigParser
     }
 
     /**
+     * In following format:
+     * [
+     *   'table alias' => [
+     *     columns1, column2, ...
+     *   ]
+     *   ...
+     * ]
+     *
+     * @return array
+     */
+    public function getTablesColumns(): array
+    {
+        return $this->tables_columns;
+    }
+
+    /**
+     * Array of columns' name
+     *
+     * @param $table_alias
+     * @return array
+     */
+    public function getTablesColumn($table_alias): array
+    {
+        return $this->tables_columns[$table_alias] ?? [];
+    }
+
+    /**
      * Return value will be as following format:
      * [
      *   'username' => provided username column by user,
@@ -172,10 +204,12 @@ class ConfigParser
                             $this->tables[$tableAlias] = $structure[$this->table_name_key] ?? '';
                             // get tables and other structure
                             $this->structures[$tableAlias] = [
-                                $this->columns_key => $structure[$this->columns_key] ?? [],
-                                $this->types_key => $structure[$this->types_key] ?? [],
-                                $this->constraints_key => $structure[$this->constraints_key] ?? [],
+                                $this->columns_key => array_values($structure[$this->columns_key] ?? []),
+                                $this->types_key => array_values($structure[$this->types_key] ?? []),
+                                $this->constraints_key => array_values($structure[$this->constraints_key] ?? []),
                             ];
+                            // get tables keys that should be fixed
+                            $this->tables_columns[$tableAlias] = array_keys($structure[$this->columns_key] ?? []);
                         }
                     }
                 }
