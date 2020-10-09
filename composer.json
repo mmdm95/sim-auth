@@ -11,7 +11,8 @@
     ],
     "autoload": {
         "psr-4": {
-            "Sim\\Auth\\": "src/"
+            "Sim\\Auth\\": "src/",
+            "Sim\\Auth\\Config\\": "src/_Config/"
         }
     },
     "require": {
