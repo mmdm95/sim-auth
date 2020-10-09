@@ -92,7 +92,7 @@ class ConfigParser
     {
         $this->config = $config;
         $this->parse();
-        $this->db = new DB($pdo);
+        $this->db = new DB($pdo, true);
     }
 
     /**
@@ -133,6 +133,15 @@ class ConfigParser
         return $this->tables;
     }
 
+    /**
+     * Return value will be as following format:
+     * [
+     *   'username' => provided username column by user,
+     *   'password' => provided password column by user,
+     * ]
+     *
+     * @return array
+     */
     public function getCredentialColumns(): array
     {
         return $this->credentials;
