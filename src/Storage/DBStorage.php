@@ -29,4 +29,14 @@ class DBStorage implements IStorage
     {
         return $this;
     }
+
+    /**
+     * Destroy session
+     * @param string $session_uuid
+     * @return static
+     */
+    public function destroy(string $session_uuid)
+    {
+        return $this;
+    }
 }
