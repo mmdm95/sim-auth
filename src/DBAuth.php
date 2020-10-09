@@ -9,7 +9,7 @@ class DBAuth extends AbstractAuth
     /**
      * {@inheritdoc}
      */
-    public function login(string $extra_query = null)
+    public function login(string $extra_query = null, array $bind_values = [])
     {
         return $this;
     }
@@ -18,14 +18,6 @@ class DBAuth extends AbstractAuth
      * {@inheritdoc}
      */
     public function loginWithID(int $id)
-    {
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     */
-    public function logout()
     {
         return $this;
     }
