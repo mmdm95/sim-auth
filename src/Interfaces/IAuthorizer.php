@@ -7,10 +7,10 @@ interface IAuthorizer
     /**
      * Use only with [STORAGE_DB] otherwise it'll not work
      *
-     * @param string $session_id
+     * @param string $session_uuid
      * @return static
      */
-    public function destroySession(string $session_id);
+    public function destroySession(string $session_uuid);
 
     /**
      * Check if current user's role is allow specific privilege to specific resource
