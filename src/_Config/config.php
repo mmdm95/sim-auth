@@ -45,7 +45,10 @@ return [
                 'id' => 'INT(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
                 'username' => 'VARCHAR(20) NOT NULL',
                 'password' => 'VARCHAR(192) NOT NULL',
-            ]
+            ],
+            'constraints' => [
+                'ADD CONSTRAINT UC_Username UNIQUE (id,username)',
+            ],
         ],
         'roles' => [
             'table_name' => 'roles',
@@ -57,7 +60,7 @@ return [
                 'name' => 'VARCHAR(20)',
                 'description' => 'VARCHAR(100)',
                 'is_admin' => 'TINYINT(1) UNSIGNED NOT NULL DEFAULT 0',
-            ]
+            ],
         ],
         'pages' => [
             'table_name' => 'pages',
@@ -68,7 +71,7 @@ return [
                 'id' => 'INT(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
                 'name' => 'VARCHAR(20)',
                 'description' => 'VARCHAR(100)',
-            ]
+            ],
         ],
         'user_role' => [
             'table_name' => 'user_role',
@@ -83,7 +86,7 @@ return [
             'constraints' => [
                 'ADD CONSTRAINT fk_urp_u FOREIGN KEY(user_id) REFERENCES users(id)',
                 'ADD CONSTRAINT fk_urp_r FOREIGN KEY(role_id) REFERENCES roles(id)',
-            ]
+            ],
         ],
         'role_page_perm' => [
             'table_name' => 'role_page_perm',
@@ -99,7 +102,7 @@ return [
             'constraints' => [
                 'ADD CONSTRAINT fk_rpp_r FOREIGN KEY(role_id) REFERENCES roles(id)',
                 'ADD CONSTRAINT fk_rpp_pa FOREIGN KEY(page_id) REFERENCES pages(id)',
-            ]
+            ],
         ],
         'user_page_perm' => [
             'table_name' => 'user_page_perm',
@@ -116,7 +119,7 @@ return [
             'constraints' => [
                 'ADD CONSTRAINT fk_upp_u FOREIGN KEY(user_id) REFERENCES users(id)',
                 'ADD CONSTRAINT fk_upp_pa FOREIGN KEY(page_id) REFERENCES pages(id)',
-            ]
+            ],
         ],
         'sessions' => [
             'table_name' => 'sessions',
