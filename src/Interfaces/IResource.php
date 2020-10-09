@@ -2,36 +2,36 @@
 
 namespace Sim\Auth\Interfaces;
 
-interface IPage
+interface IResource
 {
     /**
      * Add page(s) to database
      *
-     * @param array $pages
+     * @param array $resources
      * @return static
      */
-    public function addPages(array $pages);
+    public function addResources(array $resources);
 
     /**
      * Remove page(s) from database
      *
-     * @param array $pages
+     * @param array $resources
      * @return static
      */
-    public function removePages(array $pages);
+    public function removeResources(array $resources);
 
     /**
      * Check if a page exists
      *
-     * @param string $page
+     * @param string $resource
      * @return bool
      */
-    public function hasPage(string $page): bool;
+    public function hasResource(string $resource): bool;
 
     /**
      * Get all pages
      *
      * @return array
      */
-    public function getPages(): array;
+    public function getResources(): array;
 }
