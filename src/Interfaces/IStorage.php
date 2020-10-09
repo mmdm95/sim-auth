@@ -14,9 +14,9 @@ interface IStorage
     /**
      * Restore credentials to storage
      *
-     * @return static
+     * @return array|null
      */
-    public function restore();
+    public function restore(): ?array;
 
     /**
      * Delete stored credentials from storage
