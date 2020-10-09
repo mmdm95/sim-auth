@@ -23,4 +23,11 @@ interface IAuth
     const PERMISSION_READ = 2;
     const PERMISSION_UPDATE = 3;
     const PERMISSION_DELETE = 4;
+
+    const PERMISSIONS = [
+        self::PERMISSION_CREATE,
+        self::PERMISSION_READ,
+        self::PERMISSION_UPDATE,
+        self::PERMISSION_DELETE,
+    ];
 }
