@@ -14,9 +14,10 @@ interface IAuthenticator
      * ]
      *
      * @param string|null $extra_query
+     * @param array $bind_values
      * @return static
      */
-    public function login(string $extra_query = null);
+    public function login(string $extra_query = null, array $bind_values = []);
 
     /**
      * @param int $id
