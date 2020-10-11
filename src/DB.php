@@ -30,6 +30,21 @@ class DB
     protected $quote_replace = '""';
 
     /**
+     * @var array
+     */
+    protected static $quote_arr_static = ['`', '`'];
+
+    /**
+     * @var string
+     */
+    protected static $quote_find_static = '"';
+
+    /**
+     * @var string
+     */
+    protected static $quote_replace_static = '""';
+
+    /**
      * @var string
      */
     protected $db_name;
@@ -113,20 +128,28 @@ class DB
      * You should quote $where yourself
      *
      * @param string $table_name
-     * @param string $where
+     * @param string|null $where
      * @param array|string $columns
      * @param array $bind_values
      * @return array
      * @throws IDBException
      */
-    public function getFrom(string $table_name, string $where, $columns = '*', array $bind_values = []): array
+    public function getFrom(
+        string $table_name,
+        ?string $where = null,
+        $columns = '*',
+        array $bind_values = []
+    ): array
     {
         $columns = $this->quoteNames($columns);
         if (is_array($columns)) {
             $columns = implode(', ', $columns);
         }
 
-        $sql = "SELECT {$columns} FROM {$this->quoteName($table_name)} {$where}";
+        $sql = "SELECT {$columns} FROM {$this->quoteName($table_name)}";
+        if (!empty($where)) {
+            $sql .= " WHERE {$where}";
+        }
         return $this->exec($sql, $bind_values)->fetchAll(PDO::FETCH_ASSOC);
     }
 
@@ -137,7 +160,7 @@ class DB
      * @param string $tbl1
      * @param string $tbl2
      * @param string $on
-     * @param string $where
+     * @param string|null $where
      * @param array|string $columns
      * @param array $bind_values
      * @return array
@@ -148,7 +171,7 @@ class DB
         string $tbl1,
         string $tbl2,
         string $on,
-        string $where,
+        ?string $where = null,
         $columns = '*',
         array $bind_values = []
     ): array
@@ -159,8 +182,10 @@ class DB
         }
 
         $sql = "SELECT {$columns} FROM {$this->quoteName($tbl1)} " .
-            "{$join_type} JOIN {$this->quoteName($tbl2)} ON {$on} " .
-            "WHERE {$where}";
+            "{$join_type} JOIN {$this->quoteName($tbl2)} ON {$on}";
+        if (!empty($where)) {
+            $sql .= " WHERE {$where}";
+        }
 
         return $this->exec($sql, $bind_values)->fetchAll(PDO::FETCH_ASSOC);
     }
@@ -229,12 +254,12 @@ class DB
      *
      * @param string $table_name
      * @param array $values
-     * @param string $where
+     * @param string|null $where
      * @param array $bind_values
      * @return bool
      * @throws IDBException
      */
-    public function update(string $table_name, array $values, string $where, array $bind_values = []): bool
+    public function update(string $table_name, array $values, ?string $where = null, array $bind_values = []): bool
     {
         $i = 1;
         $namedParameters = [];
@@ -247,10 +272,19 @@ class DB
 
         $sql = "UPDATE {$this->quoteName($table_name)} SET (" .
             implode(',', $namedParameters) .
-            ") " .
-            "WHERE {$where}";
+            ")";
+        if (!empty($where)) {
+            $sql .= " WHERE {$where}";
+        }
 
-        return $this->exe($sql, array_merge($bindValues, $bind_values));
+        $this->pdo->beginTransaction();
+        $res = $this->exe($sql, array_merge($bindValues, $bind_values));
+        if ($res) {
+            $this->pdo->commit();
+        } else {
+            $this->pdo->rollBack();
+        }
+        return $res;
     }
 
     /**
@@ -265,23 +299,66 @@ class DB
     public function delete(string $table_name, string $where, array $bind_values = []): bool
     {
         $sql = "DELETE FROM {$this->quoteName($table_name)} WHERE {$where}";
-        return $this->exe($sql, $bind_values);
+
+        $this->pdo->beginTransaction();
+        $res = $this->exe($sql, $bind_values);
+        if ($res) {
+            $this->pdo->commit();
+        } else {
+            $this->pdo->rollBack();
+        }
+        return $res;
     }
 
     /**
      * You should quote $where yourself.
      *
      * @param string $table_name
-     * @param string $where
+     * @param string|null $where
      * @param array $bind_values
      * @return int
      * @throws IDBException
      */
-    public function count(string $table_name, string $where, array $bind_values = []): int
+    public function count(string $table_name, ?string $where = null, array $bind_values = []): int
     {
-        $sql = "SELECT COUNT(*) AS {$this->quoteName('count')} FROM {$table_name} WHERE {$where}";
+        $sql = "SELECT COUNT(*) AS {$this->quoteName('count')} FROM {$table_name}";
+        if (!empty($where)) {
+            $sql .= " WHERE {$where}";
+        }
+
         $res = $this->exec($sql, $bind_values)->fetchAll(PDO::FETCH_ASSOC);
         return (int)$res['count'];
+    }
+
+    /**
+     * @param string $table_name
+     * @param array $values
+     * @param string|null $where
+     * @param array $bind_values
+     * @return bool
+     * @throws IDBException
+     */
+    public function updateIfExistsOrInsert(string $table_name, array $values, ?string $where = null, array $bind_values = []): bool
+    {
+        // begin a transaction
+        $this->pdo->beginTransaction();
+
+        // get count first
+        $count = $this->count($table_name, $where, $bind_values);
+        // if there is an item, then update it
+        if ($count > 0) {
+            $res = $this->update($table_name, $values, $where, $bind_values);
+        } else { // otherwise insert it
+            $res = $this->insert($table_name, $values);
+        }
+
+        // commit or rollback transaction
+        if ($res) {
+            $this->pdo->commit();
+        } else {
+            $this->pdo->rollBack();
+        }
+        return $res;
     }
 
     /**
@@ -290,18 +367,24 @@ class DB
      */
     public function quoteName(string $name): string
     {
+        return self::quoteSingleName($name);
+    }
+
+    public static function quoteSingleName(string $name): string
+    {
+        $name = trim(explode(' AS ', $name)[0]);
         if (false !== strpos($name, '.')) {
             return implode(
                 '.',
                 array_map(
-                    [$this, 'quoteName'],
+                    'self::quoteSingleName',
                     explode('.', $name)
                 )
             );
         }
 
-        $name = str_replace($this->quote_find, $this->quote_replace, $name);
-        return $this->quote_arr[0] . $name . $this->quote_arr[1];
+        $name = str_replace(self::$quote_find_static, self::$quote_replace_static, $name);
+        return self::$quote_arr_static[0] . $name . self::$quote_arr_static[1];
     }
 
     /**
@@ -394,16 +477,28 @@ class DB
                 $this->quote_arr = ['`', '`'];
                 $this->quote_find = '`';
                 $this->quote_replace = '``';
+                //-----
+                self::$quote_arr_static = ['`', '`'];
+                self::$quote_find_static = '`';
+                self::$quote_replace_static = '``';
                 return;
             case 'sqlsrv':
                 $this->quote_arr = ['[', ']'];
                 $this->quote_find = ']';
                 $this->quote_replace = '][';
+                //-----
+                self::$quote_arr_static = ['[', ']'];
+                self::$quote_find_static = ']';
+                self::$quote_replace_static = '][';
                 return;
             default:
                 $this->quote_arr = ['"', '"'];
                 $this->quote_find = '"';
                 $this->quote_replace = '""';
+                //-----
+                self::$quote_arr_static = ['"', '"'];
+                self::$quote_find_static = '"';
+                self::$quote_replace_static = '""';
                 return;
         }
     }
