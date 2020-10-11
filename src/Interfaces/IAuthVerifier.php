@@ -6,8 +6,8 @@ interface IAuthVerifier
 {
     /**
      * @param string $text
-     * @param $algorithm
+     * @param string $hashed_value
      * @return bool
      */
-    public function verify(string $text, $algorithm): bool;
+    public function verify(string $text, string $hashed_value): bool;
 }

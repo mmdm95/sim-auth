@@ -7,6 +7,19 @@ interface IRole
     /**
      * Add role(s) for auth
      *
+     * $roles has following structure:
+     * [
+     *   [
+     *     column1 => value1,
+     *     column2 => value2,
+     *   ],
+     *   [
+     *     column1 => value3,
+     *     column2 => value4,
+     *   ],
+     *   ...
+     * ]
+     *
      * @param array $roles
      * @return static
      */
@@ -14,6 +27,9 @@ interface IRole
 
     /**
      * Remove role(s) from auth
+     *
+     * Note:
+     *   $roles should be array of roles' name or roles' id
      *
      * @param array $roles
      * @return static
@@ -24,18 +40,51 @@ interface IRole
      * Check that entered role is exists
      *
      * @param string $role
-     * @param bool $check_in_db
      * @return bool
      */
-    public function hasRole(string $role, bool $check_in_db = false): bool;
+    public function hasRole(string $role): bool;
 
     /**
      * Get all roles
      *
-     * @param bool $check_in_db
+     * Note:
+     *   It contains all columns of roles table
+     *
      * @return array
      */
-    public function getRoles(bool $check_in_db = false): array;
+    public function getRoles(): array;
+
+    /**
+     * Get all admin roles
+     *
+     * Note:
+     *   It contains all columns of roles table
+     *
+     * @return array
+     */
+    public function getAdminRoles(): array;
+
+    /**
+     * Get all roles' name
+     *
+     * @return array
+     */
+    public function getRolesName(): array;
+
+    /**
+     * Get all admin roles' name
+     *
+     * @return array
+     */
+    public function getAdminRolesName(): array;
+
+    /**
+     * Get current/loggedIn user's role
+     *
+     * @param string|int $username
+     * @return array
+     */
+    public function getUserRole($username): array;
 
     /**
      * Get current/loggedIn user's role
@@ -45,12 +94,28 @@ interface IRole
     public function getCurrentUserRole(): array;
 
     /**
-     * Check if $role is in admin roles
-     * If $role is not set, then check current user
+     * Add role(s) for auth
      *
-     * @param int|string|null $role
-     * @param bool $check_in_db
+     * Note:
+     *   You should pass an array of roles' name
+     *
+     * Note:
+     *   If [$username] parameter is null this means we point to current user
+     *
+     * @param array $roles
+     * @param null $username
+     * @return static
+     */
+    public function addRoleToUser(array $roles, $username = null);
+
+    /**
+     * Check if $username is admin
+     *
+     * Note:
+     *   If [$username] parameter is null this means we point to current user
+     *
+     * @param string|int|null $username
      * @return bool
      */
-    public function isAdmin($role = null, bool $check_in_db = false): bool;
+    public function isAdmin($username = null): bool;
 }

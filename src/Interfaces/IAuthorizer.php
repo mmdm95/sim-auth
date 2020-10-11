@@ -7,6 +7,17 @@ interface IAuthorizer
     /**
      * Use only with [STORAGE_DB] otherwise it'll not work
      *
+     * Note:
+     *   If [$username] parameter is null this means we point to current user
+     *
+     * @param string|int|null $username
+     * @return array
+     */
+    public function getSessionUUID($username = null): array;
+
+    /**
+     * Use only with [STORAGE_DB] otherwise it'll not work
+     *
      * @param string $session_uuid
      * @return static
      */
@@ -32,7 +43,7 @@ interface IAuthorizer
      * Note:
      *   If [$username] parameter is null this means we point to current user
      *
-     * @param $resource
+     * @param string|int $resource
      * @param array $permission - array of int that specifies permission constants
      * @param null $username
      * @return static
@@ -45,7 +56,7 @@ interface IAuthorizer
      * Note:
      *   If [$username] parameter is null this means we point to current user
      *
-     * @param $resource
+     * @param string|int $resource
      * @param array $permission - array of int that specifies permission constants
      * @param null $username
      * @return static
@@ -55,26 +66,20 @@ interface IAuthorizer
     /**
      * Allow access to specific permission to specific/current_user role
      *
-     * Note:
-     *   If [$role] parameter is null this means we point to current user' roles
-     *
-     * @param $resource
+     * @param string|int $resource
      * @param array $permission - array of int that specifies permission constants
-     * @param string|int|null $role
+     * @param string|int $role
      * @return static
      */
-    public function allowRole($resource, array $permission, $role = null);
+    public function allowRole($resource, array $permission, $role);
 
     /**
      * Disallow access to specific permission to specific/current_user role
      *
-     * Note:
-     *   If [$role] parameter is null this means we point to current user' roles
-     *
-     * @param $resource
+     * @param string|int $resource
      * @param array $permission - array of int that specifies permission constants
-     * @param string|int|null $role
+     * @param string|int $role
      * @return static
      */
-    public function disallowRole($resource, array $permission, $role = null);
+    public function disallowRole($resource, array $permission, $role);
 }

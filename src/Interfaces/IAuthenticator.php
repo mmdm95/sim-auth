@@ -13,17 +13,25 @@ interface IAuthenticator
      *   'password' => provided password,
      * ]
      *
+     * @param array $credentials
      * @param string|null $extra_query
      * @param array $bind_values
      * @return static
      */
-    public function login(string $extra_query = null, array $bind_values = []);
+    public function login(array $credentials, string $extra_query = null, array $bind_values = []);
 
     /**
      * @param int $id
      * @return static
      */
     public function loginWithID(int $id);
+
+    /**
+     * Resume user's login from stored credential(s)
+     *
+     * @return static
+     */
+    public function resume();
 
     /**
      * Do logout
@@ -54,12 +62,19 @@ interface IAuthenticator
     public function isSuspended(): bool;
 
     /**
-     * Set expiration time for user's login
+     * Reassign/Extend suspend time
      *
-     * @param int $timestamp
      * @return static
      */
-    public function setExpiration(int $timestamp);
+    public function extendSuspendTime();
+
+    /**
+     * Set expiration time for user's login
+     *
+     * @param string|int $timestamp
+     * @return static
+     */
+    public function setExpiration($timestamp);
 
     /**
      * Get expiration time for user's login
@@ -71,10 +86,10 @@ interface IAuthenticator
     /**
      * Set suspend time for user's login
      *
-     * @param int $timestamp
+     * @param string|int $timestamp
      * @return static
      */
-    public function setSuspendTime(int $timestamp);
+    public function setSuspendTime($timestamp);
 
     /**
      * Get suspend time for user's login
