@@ -22,11 +22,6 @@ class ConfigParser
     /**
      * @var string
      */
-    protected $credentials_key = 'credential_columns';
-
-    /**
-     * @var string
-     */
     protected $credential_username_key = 'username';
 
     /**
@@ -81,11 +76,6 @@ class ConfigParser
      * @var array
      */
     protected $structures = [];
-
-    /**
-     * @var array
-     */
-    protected $credentials = [];
 
     /**
      * ConfigParser constructor.
@@ -173,29 +163,33 @@ class ConfigParser
      * ]
      *
      * @return array
+     * @throws ConfigException
      */
     public function getCredentialColumns(): array
     {
-        return $this->credentials;
+        $usersColumns = $this->getTablesColumn($this->tables['users']);
+
+        if (!isset($usersColumns['username'], $usersColumns['password']) ||
+            empty($usersColumns['username']) ||
+            empty($usersColumns['password'])
+        ) {
+            throw new ConfigException('Users table should have [username] and [password] columns\' key');
+        }
+
+        return [
+            'username' => $usersColumns['username'],
+            'password' => $usersColumns['password'],
+        ];
     }
 
     /**
      * Parse config file
-     * @throws ConfigException
      */
     protected function parse(): void
     {
         if (!empty($this->config)) {
             foreach ($this->config as $key => $structures) {
-                if ($key === $this->constraints_key) { // if it wat credentials columns key
-                    if (!isset($structures[$this->credential_username_key], $structures[$this->credential_password_key]) ||
-                        empty($structures[$this->credential_username_key]) || empty($structures[$this->credential_password_key])) {
-                        throw new ConfigException('Username/Password column is not set or it is empty!');
-                    }
-                    // store credential columns
-                    $this->credentials[$this->credential_username_key] = $structures[$this->credential_username_key];
-                    $this->credentials[$this->credential_password_key] = $structures[$this->credential_password_key];
-                } elseif ($key === $this->blueprint_key) { // if it was blueprints key
+                if ($key === $this->blueprint_key) { // if it was blueprints key
                     // iterate through all blueprints
                     foreach ($structures as $tableAlias => $structure) {
                         // if alias is in aliases array
