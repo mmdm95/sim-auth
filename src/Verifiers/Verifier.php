@@ -11,6 +11,6 @@ class Verifier implements IAuthVerifier
      */
     public function verify(string $text, $algorithm): bool
     {
-
+        
     }
 }
