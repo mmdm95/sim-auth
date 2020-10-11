@@ -1,29 +1,14 @@
 <?php
 
 /**
- * Please do not change keys to prevent
- * any problem :)
- *
- * Follow this rule and you'll never have
- * problem with auth class:
+ * Follow this only rule and you'll never have
+ * problem with config file(s):
  * -- DO NOT CHANGE ANY KEY, JUST CHANGE VALUES --
  *
+ * Please do not change keys to prevent
+ * any problem :)
  */
 return [
-    'credential_columns' => [
-        /**
-         * [
-         *  'username' => actual username column,
-         *  'password' => actual password column,
-         * ]
-         *
-         * Note:
-         *   Please do not change keys and just
-         *   change values of them
-         */
-        'username' => 'username',
-        'password' => 'password',
-    ],
     'blueprints' => [
         /**
          * lib table alias name => [
@@ -51,7 +36,7 @@ return [
             'types' => [
                 'id' => 'INT(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
                 'username' => 'VARCHAR(20) NOT NULL',
-                'password' => 'VARCHAR(192) NOT NULL',
+                'password' => 'VARCHAR(255) NOT NULL',
             ],
             'constraints' => [
                 'ADD CONSTRAINT UC_Username UNIQUE (id,username)',
@@ -151,16 +136,18 @@ return [
                 'ip_address' => 'ip_address',
                 'device' => 'device',
                 'browser' => 'browser',
+                'platform' => 'platform',
                 'expire_at' => 'expire_at',
                 'created_at' => 'created_at',
             ],
             'types' => [
                 'id' => 'INT(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
-                'uuid' => 'VARCHAR(192)',
+                'uuid' => 'VARCHAR(36)',
                 'user_id' => 'INT(11) UNSIGNED NOT NULL',
                 'ip_address' => 'VARCHAR(16)',
                 'device' => 'TEXT',
                 'browser' => 'TEXT',
+                'platform' => 'TEXT',
                 'expire_at' => 'INT(11) UNSIGNED',
                 'created_at' => 'INT(11) UNSIGNED',
             ],
