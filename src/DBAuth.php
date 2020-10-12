@@ -2,6 +2,7 @@
 
 namespace Sim\Auth;
 
+use http\Cookie;
 use PDO;
 use Sim\Auth\Abstracts\AbstractAuth;
 use Sim\Auth\Exceptions\IncorrectPasswordException;
@@ -23,7 +24,7 @@ class DBAuth extends AbstractAuth
      * @param PDO $pdo_instance
      * @param string $namespace
      * @param array $crypt_keys
-     * @param int $alg
+     * @param string|int $algo
      * @param int $storage_type
      * @param array|null $config
      * @throws Exceptions\InvalidStorageTypeException
@@ -34,7 +35,7 @@ class DBAuth extends AbstractAuth
         PDO $pdo_instance,
         string $namespace = 'default',
         array $crypt_keys = [],
-        $alg = PASSWORD_BCRYPT,
+        $algo = PASSWORD_BCRYPT,
         int $storage_type = IAuth::STORAGE_DB,
         ?array $config = null
     )
@@ -46,7 +47,7 @@ class DBAuth extends AbstractAuth
             $storage_type,
             $config
         );
-        $this->verifier = new Verifier($alg);
+        $this->verifier = new Verifier($algo);
     }
 
     /**
@@ -61,6 +62,14 @@ class DBAuth extends AbstractAuth
         array $bind_values = []
     )
     {
+        // only login if status is not active
+        if ($this->getStatus() === IAuth::STATUS_ACTIVE) return $this;
+        // if there is a something stored on device, then resume that user
+        if (!$this->isExpired()) {
+            $this->resume();
+            return $this;
+        };
+
         $userColumns = $this->config_parser->getTablesColumn($this->users_key);
         $userRoleColumns = $this->config_parser->getTablesColumn($this->user_role_key);
 
@@ -104,97 +113,9 @@ class DBAuth extends AbstractAuth
 
         $this->storage->store($credentials);
 
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws IDBException
-     */
-    public function resume()
-    {
-        $restoredVal = $this->storage->restore();
-        if (!empty($restoredVal)) {
-            try {
-                if ($this->evaluateStorageValue()) {
-                    // activate status
-                    $this->storage->setStatus(IAuth::STATUS_ACTIVE);
-                }
-            } catch (\Exception $e) {
-                // do nothing for now
-            }
-        }
+        // set verifier for storage to check user on some occasions
+        $this->storage->setVerifier($this->verifier);
 
         return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws IDBException
-     */
-    public function isLoggedIn(): bool
-    {
-        if (IAUTH::STATUS_ACTIVE !== $this->getStatus()) return false;
-
-        try {
-            return $this->evaluateStorageValue();
-        } catch (\Exception $e) {
-            return false;
-        }
-    }
-
-    /**
-     * @return bool
-     * @throws IDBException
-     */
-    private function evaluateStorageValue(): bool
-    {
-        $restoredVal = $this->storage->restore();
-        if (empty($restoredVal)) return false;
-
-        $userColumns = $this->config_parser->getTablesColumn($this->users_key);
-        if ($this->getStorageType() === IAuth::STORAGE_DB) {
-            $sessionColumns = $this->config_parser->getTablesColumn($this->sessions_key);
-            $userSess = $this->db->getFrom(
-                $this->tables[$this->sessions_key],
-                "{$sessionColumns['uuid']}=:u",
-                $sessionColumns['user_id'],
-                [
-                    'u' => $restoredVal['uuid'],
-                ]
-            );
-
-            if (count($userSess) !== 1) return false;
-
-            $userId = $userSess[0][$sessionColumns['user_id']];
-
-            $where = "{$userColumns['id']}=:u";
-            $bindValues = [
-                'u' => $userId,
-            ];
-        } else {
-            $where = "{$userColumns['username']}=:u";
-            $bindValues = [
-                'u' => $restoredVal['username'],
-            ];
-        }
-
-        $user = $this->db->getFrom(
-            $this->tables[$this->users_key],
-            $where,
-            $userColumns['password'],
-            $bindValues
-        );
-
-        if (count($user) !== 1) return false;
-
-        $password = $user[0][$userColumns['password']];
-
-        // verify password with user's password in db
-        $verified = $this->verifier->verify($this->$restoredVal['password'], $password);
-
-        if ($verified) return true;
-
-        return false;
     }
 }
