@@ -29,7 +29,7 @@ class AuthUtil
      * @param $timestamp
      * @return bool
      */
-    public static  function isValidTimestamp($timestamp): bool
+    public static function isValidTimestamp($timestamp): bool
     {
         return ($timestamp <= PHP_INT_MAX)
             && ($timestamp >= ~PHP_INT_MAX);
@@ -66,6 +66,7 @@ class AuthUtil
                 }
             }
         }
+
         return 'unknown';
     }
 }
