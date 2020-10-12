@@ -87,7 +87,7 @@ class ConfigParser
     {
         $this->config = $config;
         $this->parse();
-        $this->db = new DB($pdo, true);
+        $this->db = new DB($pdo);
     }
 
     /**
@@ -96,23 +96,39 @@ class ConfigParser
      */
     public function up()
     {
+        // change database collation
+        $this->db->changeDBCollation();
+
         if (!empty($this->structures)) {
             // iterate through all tables for their structure
             foreach ($this->structures as $tableName => $items) {
                 // create table is not exists
-                $this->db->createTableIfNotExists($tableName);
+                $this->db->createTableIfNotExists(
+                    $tableName,
+                    $items[$this->columns_key]['id'],
+                    $items[$this->types_key]['id']
+                );
+
                 // iterate through all columns and create column if not exists
-                foreach ($items[$this->columns_key] as $columnName) {
-                    if (isset($items[$this->types_key][$columnName]) &&
-                        is_string($items[$this->types_key][$columnName]) &&
-                        !empty($items[$this->types_key][$columnName])) {
-                        $this->db->createColumnIfNotExists($tableName, $columnName, $items[$this->types_key][$columnName]);
+                foreach ($items[$this->columns_key] as $columnKey => $columnName) {
+                    $typeKey = $items[$this->types_key][$columnKey] ?? null;
+                    if (
+                        'id' !== $columnKey &&
+                        is_string($typeKey) &&
+                        !empty($typeKey)
+                    ) {
+                        $this->db->createColumnIfNotExists($tableName, $columnName, $typeKey);
                     }
                 }
-                // iterate through all constraint and add it to table
-                foreach ($items[$this->constraints_key] as $constraint) {
-                    if (is_string($constraint) && !empty($constraint)) {
-                        $this->db->addConstraint($tableName, $constraint);
+            }
+
+            // iterate through all tables for their constraint(s)
+            foreach ($this->structures as $tableName => $items) {
+                if (isset($items[$this->constraints_key])) {
+                    foreach ($items[$this->constraints_key] as $constraint) {
+                        if (is_string($constraint) && !empty($constraint)) {
+                            $this->db->addConstraint($tableName, $constraint);
+                        }
                     }
                 }
             }
@@ -198,12 +214,12 @@ class ConfigParser
                             $this->tables[$tableAlias] = $structure[$this->table_name_key] ?? '';
                             // get tables and other structure
                             $this->structures[$tableAlias] = [
-                                $this->columns_key => array_values($structure[$this->columns_key] ?? []),
-                                $this->types_key => array_values($structure[$this->types_key] ?? []),
-                                $this->constraints_key => array_values($structure[$this->constraints_key] ?? []),
+                                $this->columns_key => $structure[$this->columns_key] ?? [],
+                                $this->types_key => $structure[$this->types_key] ?? [],
+                                $this->constraints_key => $structure[$this->constraints_key] ?? [],
                             ];
                             // get tables keys that should be fixed
-                            $this->tables_columns[$tableAlias] = array_keys($structure[$this->columns_key] ?? []);
+                            $this->tables_columns[$tableAlias] = $structure[$this->columns_key] ?? [];
                         }
                     }
                 }
