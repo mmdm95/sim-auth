@@ -80,12 +80,24 @@ class DB
 
     /**
      * @param string $table_name
+     * @param string $column_name
+     * @param $column_info
      * @return bool
      * @throws IDBException
      */
-    public function createTableIfNotExists(string $table_name): bool
+    public function createTableIfNotExists(string $table_name, string $column_name, $column_info): bool
     {
-        $sql = "CREATE TABLE IF NOT EXISTS {$this->quoteNames($table_name)}";
+        $quotedTable = $this->quoteNames($table_name);
+        $quotedColumnName = $this->quoteNames($column_name);
+
+        if ('sqlsrv' === $this->db_driver) {
+            $sql = "IF NOT EXISTS (SELECT * FROM sysobjects WHERE name={$quotedTable} AND xtype='U)";
+            $sql .= " CREATE TABLE {$quotedTable} ({$quotedColumnName} {$column_info})";
+        } else {
+            $sql = "CREATE TABLE IF NOT EXISTS {$quotedTable} ";
+            $sql .= "({$quotedColumnName} {$column_info});";
+        }
+
         $res = $this->exe($sql);
 
         // change table collation
@@ -95,6 +107,7 @@ class DB
     }
 
     /**
+     * @see https://stackoverflow.com/a/29428841/12154893 - for mysql query
      * @param string $table_name
      * @param string $column_name
      * @param string $column_type
@@ -103,10 +116,28 @@ class DB
      */
     public function createColumnIfNotExists(string $table_name, string $column_name, string $column_type): bool
     {
-        $sql = "IF NOT EXISTS( SELECT NULL FROM INFORMATION_SCHEMA.COLUMNS ";
-        $sql .= "WHERE table_name = {$this->quoteName($table_name)} AND table_schema = {$this->db_name} AND column_name = {$this->quoteName($column_name)}) ";
-        $sql .= "THEN ALTER TABLE {$this->quoteName($table_name)} ADD {$this->quoteName($column_name)} {$column_type}; ";
-        $sql .= "END IF;";
+        $stringDBName = "'" . $this->db_name . "'";
+        $stringTableName = "'" . $table_name . "'";
+        $stringColumnName = "'" . $column_name . "'";
+
+        $quotedTableName = $this->quoteName($table_name);
+        $quotedColumnName = $this->quoteName($column_name);
+
+        if ('sqlsrv' === $this->db_driver) {
+            $sql = "IF NOT EXISTS (SELECT * FROM {$this->quoteName('INFORMATION_SCHEMA.COLUMNS')} ";
+            $sql .= "WHERE {$this->quoteName('TABLE_SCHEMA')}={$stringDBName} AND ";
+            $sql .= "{$this->quoteName('TABLE_NAME')}={$stringTableName} AND ";
+            $sql .= "{$this->quoteName('COLUMN_NAME')}={$stringColumnName}) ";
+            $sql .= "BEGIN ALTER TABLE {$quotedTableName} ADD {$quotedColumnName} {$column_type} ";
+            $sql .= "END;";
+        } else {
+            $sql = "IF NOT EXISTS (SELECT NULL FROM {$this->quoteName('INFORMATION_SCHEMA.COLUMNS')} ";
+            $sql .= "WHERE {$this->quoteName('TABLE_SCHEMA')}={$stringDBName} AND ";
+            $sql .= "{$this->quoteName('TABLE_NAME')}={$stringTableName} AND ";
+            $sql .= "{$this->quoteName('COLUMN_NAME')}={$stringColumnName}) ";
+            $sql .= "THEN ALTER TABLE {$quotedTableName} ADD {$quotedColumnName} {$column_type}; ";
+            $sql .= "END IF;";
+        }
 
         return $this->exe($sql);
     }
@@ -182,7 +213,7 @@ class DB
         }
 
         $sql = "SELECT {$columns} FROM {$this->quoteName($tbl1)} " .
-            "{$join_type} JOIN {$this->quoteName($tbl2)} ON {$on}";
+            strtoupper($join_type) . " JOIN {$this->quoteName($tbl2)} ON {$on}";
         if (!empty($where)) {
             $sql .= " WHERE {$where}";
         }
@@ -321,7 +352,7 @@ class DB
      */
     public function count(string $table_name, ?string $where = null, array $bind_values = []): int
     {
-        $sql = "SELECT COUNT(*) AS {$this->quoteName('count')} FROM {$table_name}";
+        $sql = "SELECT COUNT(*) AS {$this->quoteName('count')} FROM {$this->quoteName($table_name)}";
         if (!empty($where)) {
             $sql .= " WHERE {$where}";
         }
@@ -370,6 +401,10 @@ class DB
         return self::quoteSingleName($name);
     }
 
+    /**
+     * @param string $name
+     * @return string
+     */
     public static function quoteSingleName(string $name): string
     {
         $name = trim(explode(' AS ', $name)[0]);
@@ -385,6 +420,20 @@ class DB
 
         $name = str_replace(self::$quote_find_static, self::$quote_replace_static, $name);
         return self::$quote_arr_static[0] . $name . self::$quote_arr_static[1];
+    }
+
+    /**
+     * @throws IDBException
+     */
+    public function changeDBCollation(): void
+    {
+        if ('sqlsrv' === $this->db_driver) {
+            $sql = "ALTER DATABASE {$this->quoteName($this->db_name)} COLLATE {$this->collation};";
+        } else {
+            $sql = "ALTER DATABASE {$this->quoteName($this->db_name)} CHARACTER SET utf8mb4 COLLATE {$this->collation};";
+        }
+
+        $this->exec($sql);
     }
 
     /**
@@ -515,25 +564,12 @@ class DB
     }
 
     /**
-     * @throws IDBException
-     */
-    private function changeDBCollation(): void
-    {
-        if ('sqlsrv' === $this->db_driver) {
-            $sql = "ALTER DATABASE {$this->db_name} COLLATE {$this->collation};";
-        } else {
-            $sql = "ALTER DATABASE {$this->db_name} CHARACTER SET utf8 COLLATE {$this->collation};";
-        }
-        $this->exec($sql);
-    }
-
-    /**
      * @param string $table_name
      * @throws IDBException
      */
     private function changeTableCollation(string $table_name): void
     {
-        $sql = "ALTER TABLE {$table_name} CONVERT TO CHARACTER SET utf8 COLLATE {$this->collation};";
+        $sql = "ALTER TABLE {$this->quoteName($table_name)} CONVERT TO CHARACTER SET utf8mb4 COLLATE {$this->collation};";
         $this->exec($sql);
     }
 
