@@ -147,6 +147,24 @@ abstract class AbstractStorage implements IStorage
     /**
      * {@inheritdoc}
      */
+    public function setExpireTime(int $expire_time)
+    {
+        $this->expire_time = $expire_time;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setSuspendTime(int $suspend_time)
+    {
+        $this->suspend_time = $suspend_time;
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
     public function setVerifier(IAuthVerifier $verifier)
     {
         $this->verifier = $verifier;
