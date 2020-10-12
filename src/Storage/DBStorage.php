@@ -38,17 +38,7 @@ class DBStorage extends AbstractStorage
      */
     protected $storage_name = '__Sim_Auth_DB__';
 
-    /**
-     * @var array
-     */
-    protected $tables;
-
     /********** table keys **********/
-
-    /**
-     * @var string
-     */
-    protected $users_key = 'users';
 
     /**
      * @var string
@@ -89,7 +79,6 @@ class DBStorage extends AbstractStorage
         $this->exp_key = $this->storage_name . '-' . $this->namespace . '-uuid';
         $this->sus_key = $this->storage_name . '-' . $this->namespace . '-suspend_time';
 
-        $this->tables = $this->config_parser->getTables();
     }
 
     /**
@@ -132,7 +121,7 @@ class DBStorage extends AbstractStorage
                 time() + $this->expire_time,
                 '/',
                 null,
-                true,
+                null,
                 true
             );
             $this->cookie->set($setCookie);
@@ -147,6 +136,10 @@ class DBStorage extends AbstractStorage
     public function restore(): ?array
     {
         $cookieVal = $this->cookie->get($this->exp_key, null);
+        $cookieVal = json_decode($cookieVal, true);
+        if (false === $cookieVal || empty($cookieVal)) {
+            $cookieVal = null;
+        }
         return $cookieVal;
     }
 
@@ -165,10 +158,11 @@ class DBStorage extends AbstractStorage
     /**
      * {@inheritdoc}
      * @throws CookieException
+     * @throws IDBException
      */
     public function updateSuspendTime()
     {
-        if (!$this->hasExpired()) {
+        if (!$this->hasExpired() && $this->evaluateStorageValue()) {
             $this->cookie->remove($this->sus_key);
             // suspend cookie
             $setCookie = new SetCookie(
@@ -177,7 +171,7 @@ class DBStorage extends AbstractStorage
                 time() + $this->suspend_time,
                 '/',
                 null,
-                true,
+                null,
                 true
             );
             $this->cookie->set($setCookie);
@@ -191,11 +185,13 @@ class DBStorage extends AbstractStorage
      */
     public function hasExpired(): bool
     {
-        $expireVal = $this->cookie->get($this->exp_key, null);
+        $expireVal = $this->restore();
         $res = is_null($expireVal);
-        if ($res) {
+
+        if (IAuth::STATUS_ACTIVE === $this->getStatus() && $res) {
             $this->setStatus(IAuth::STATUS_EXPIRE);
         }
+
         return $res;
     }
 
@@ -206,11 +202,11 @@ class DBStorage extends AbstractStorage
     {
         $suspendVal = $this->cookie->get($this->sus_key, null);
         $res = is_null($suspendVal);
-        if (!$this->hasExpired() && $this->status === IAuth::STATUS_ACTIVE && $res) {
+
+        if (!$this->hasExpired() && IAuth::STATUS_ACTIVE === $this->getStatus() && $res) {
             $this->setStatus(IAuth::STATUS_SUSPEND);
-        } else {
-            $this->setStatus(IAuth::STATUS_NONE);
         }
+
         return $res;
     }
 
@@ -269,5 +265,57 @@ class DBStorage extends AbstractStorage
         }
 
         return $userId;
+    }
+
+    /**
+     * @return bool
+     * @throws IDBException
+     */
+    protected function evaluateStorageValue(): bool
+    {
+        $restoredVal = $this->restore();
+        if (empty($restoredVal)) return false;
+
+        $userColumns = $this->config_parser->getTablesColumn($this->users_key);
+        $sessionColumns = $this->config_parser->getTablesColumn($this->sessions_key);
+        $userSess = $this->db->getFrom(
+            $this->tables[$this->sessions_key],
+            "{$sessionColumns['uuid']}=:u",
+            $sessionColumns['user_id'],
+            [
+                'u' => $restoredVal['uuid'],
+            ]
+        );
+
+        if (count($userSess) !== 1) return false;
+
+        $userId = $userSess[0][$sessionColumns['user_id']];
+
+        $where = "{$userColumns['id']}=:u";
+        $bindValues = [
+            'u' => $userId,
+        ];
+
+        $user = $this->db->getFrom(
+            $this->tables[$this->users_key],
+            $where,
+            $userColumns['password'],
+            $bindValues
+        );
+
+        if (count($user) !== 1) return false;
+
+        $password = $user[0][$userColumns['password']];
+
+        // if we do not have any password to verify,
+        // then we do not have any verifier
+        if (is_null($this->verifier)) return true;
+
+        // verify password with user's password in db
+        $verified = $this->verifier->verify($this->$restoredVal['password'], $password);
+
+        if ($verified) return true;
+
+        return false;
     }
 }

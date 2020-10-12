@@ -5,6 +5,7 @@ namespace Sim\Auth\Storage;
 use Sim\Auth\Abstracts\AbstractStorage;
 use Sim\Auth\Config\ConfigParser;
 use Sim\Auth\Interfaces\IAuth;
+use Sim\Auth\Interfaces\IDBException;
 use Sim\Crypt\Exceptions\CryptException;
 use Sim\Session\ISession;
 use Sim\Session\Session;
@@ -55,6 +56,7 @@ class SessionStorage extends AbstractStorage
 
     /**
      * {@inheritdoc}
+     * @throws IDBException
      */
     public function store(array $credentials)
     {
@@ -86,10 +88,11 @@ class SessionStorage extends AbstractStorage
 
     /**
      * {@inheritdoc}
+     * @throws IDBException
      */
     public function updateSuspendTime()
     {
-        if (!$this->hasExpired()) {
+        if (!$this->hasExpired() && $this->evaluateStorageValue()) {
             $this->session->setTimed($this->sus_key, 'suspend_val', $this->suspend_time);
             $this->setStatus(IAuth::STATUS_ACTIVE);
         }
@@ -101,9 +104,9 @@ class SessionStorage extends AbstractStorage
      */
     public function hasExpired(): bool
     {
-        $expireVal = $this->session->getTimed($this->exp_key, null);
+        $expireVal = $this->restore();
         $res = is_null($expireVal);
-        if ($res) {
+        if (IAuth::STATUS_ACTIVE === $this->getStatus() && $res) {
             $this->setStatus(IAuth::STATUS_EXPIRE);
         }
         return $res;
@@ -116,11 +119,50 @@ class SessionStorage extends AbstractStorage
     {
         $suspendVal = $this->session->getTimed($this->sus_key, null);
         $res = is_null($suspendVal);
-        if (!$this->hasExpired() && $this->status === IAuth::STATUS_ACTIVE && $res) {
+        if (!$this->hasExpired() && $this->getStatus() === IAuth::STATUS_ACTIVE && $res) {
             $this->setStatus(IAuth::STATUS_SUSPEND);
         } else {
             $this->setStatus(IAuth::STATUS_NONE);
         }
         return $res;
+    }
+
+    /**
+     * @return bool
+     * @throws IDBException
+     */
+    protected function evaluateStorageValue(): bool
+    {
+        $restoredVal = $this->restore();
+        if (empty($restoredVal)) return false;
+
+        $userColumns = $this->config_parser->getTablesColumn($this->users_key);
+
+        $where = "{$userColumns['username']}=:u";
+        $bindValues = [
+            'u' => $restoredVal['username'],
+        ];
+
+        $user = $this->db->getFrom(
+            $this->tables[$this->users_key],
+            $where,
+            $userColumns['password'],
+            $bindValues
+        );
+
+        if (count($user) !== 1) return false;
+
+        $password = $user[0][$userColumns['password']];
+
+        // if we do not have any password to verify,
+        // then we do not have any verifier
+        if (is_null($this->verifier)) return true;
+
+        // verify password with user's password in db
+        $verified = $this->verifier->verify($this->$restoredVal['password'], $password);
+
+        if ($verified) return true;
+
+        return false;
     }
 }
