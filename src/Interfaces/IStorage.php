@@ -26,6 +26,11 @@ interface IStorage
     public function restore(): ?array;
 
     /**
+     * @return static
+     */
+    public function resume();
+
+    /**
      * Delete stored credentials from storage
      *
      * @return static
@@ -57,4 +62,10 @@ interface IStorage
      * @return bool
      */
     public function hasSuspended(): bool;
+
+    /**
+     * @param IAuthVerifier $verifier
+     * @return static
+     */
+    public function setVerifier(IAuthVerifier $verifier);
 }
