@@ -62,6 +62,13 @@ interface IAuthenticator
     public function isSuspended(): bool;
 
     /**
+     * Check if current status is none
+     *
+     * @return bool
+     */
+    public function isNone(): bool;
+
+    /**
      * Reassign/Extend suspend time
      *
      * @return static
