@@ -2,7 +2,6 @@
 
 namespace Sim\Auth;
 
-use http\Cookie;
 use PDO;
 use Sim\Auth\Abstracts\AbstractAuth;
 use Sim\Auth\Exceptions\IncorrectPasswordException;
