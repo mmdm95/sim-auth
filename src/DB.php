@@ -358,7 +358,7 @@ class DB
         }
 
         $res = $this->exec($sql, $bind_values)->fetchAll(PDO::FETCH_ASSOC);
-        return (int)$res['count'];
+        return (int)($res[0]['count'] ?? 0);
     }
 
     /**
