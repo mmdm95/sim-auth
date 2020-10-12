@@ -186,7 +186,7 @@ class DBStorage extends AbstractStorage
     public function hasExpired(): bool
     {
         $expireVal = $this->restore();
-        $res = is_null($expireVal);
+        $res = is_null($expireVal) || IAuth::STATUS_NONE === $this->getStatus();
 
         if (IAuth::STATUS_ACTIVE === $this->getStatus() && $res) {
             $this->setStatus(IAuth::STATUS_EXPIRE);
@@ -201,7 +201,7 @@ class DBStorage extends AbstractStorage
     public function hasSuspended(): bool
     {
         $suspendVal = $this->cookie->get($this->sus_key, null);
-        $res = is_null($suspendVal);
+        $res = is_null($suspendVal) || IAuth::STATUS_NONE === $this->getStatus();
 
         if (!$this->hasExpired() && IAuth::STATUS_ACTIVE === $this->getStatus() && $res) {
             $this->setStatus(IAuth::STATUS_SUSPEND);

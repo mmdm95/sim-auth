@@ -105,10 +105,12 @@ class SessionStorage extends AbstractStorage
     public function hasExpired(): bool
     {
         $expireVal = $this->restore();
-        $res = is_null($expireVal);
+        $res = is_null($expireVal) || IAuth::STATUS_NONE === $this->getStatus();
+
         if (IAuth::STATUS_ACTIVE === $this->getStatus() && $res) {
             $this->setStatus(IAuth::STATUS_EXPIRE);
         }
+
         return $res;
     }
 
@@ -118,12 +120,12 @@ class SessionStorage extends AbstractStorage
     public function hasSuspended(): bool
     {
         $suspendVal = $this->session->getTimed($this->sus_key, null);
-        $res = is_null($suspendVal);
+        $res = is_null($suspendVal) || IAuth::STATUS_NONE === $this->getStatus();
+
         if (!$this->hasExpired() && $this->getStatus() === IAuth::STATUS_ACTIVE && $res) {
             $this->setStatus(IAuth::STATUS_SUSPEND);
-        } else {
-            $this->setStatus(IAuth::STATUS_NONE);
         }
+
         return $res;
     }
 
