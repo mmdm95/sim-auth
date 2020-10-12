@@ -129,7 +129,7 @@ class DBStorage extends AbstractStorage
             $setCookie = new SetCookie(
                 $this->exp_key,
                 json_encode(['uuid' => $uuid]),
-                $this->expire_time,
+                time() + $this->expire_time,
                 '/',
                 null,
                 true,
