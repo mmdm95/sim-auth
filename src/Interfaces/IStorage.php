@@ -64,6 +64,18 @@ interface IStorage
     public function hasSuspended(): bool;
 
     /**
+     * @param int $expire_time
+     * @return static
+     */
+    public function setExpireTime(int $expire_time);
+
+    /**
+     * @param int $suspend_time
+     * @return static
+     */
+    public function setSuspendTime(int $suspend_time);
+
+    /**
      * @param IAuthVerifier $verifier
      * @return static
      */
