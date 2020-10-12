@@ -11,6 +11,10 @@ class Verifier implements IAuthVerifier
      */
     protected $algo;
 
+    protected $built_in_algo = [
+        PASSWORD_DEFAULT, PASSWORD_BCRYPT,
+    ];
+
     /**
      * Verifier constructor.
      * @param $algo
@@ -25,7 +29,7 @@ class Verifier implements IAuthVerifier
      */
     public function verify(string $text, string $hashed_value): bool
     {
-        if (is_string($this->algo)) {
+        if (!in_array($this->algo, $this->built_in_algo) && is_string($this->algo)) {
             return hash($this->algo, $text) === $hashed_value;
         } else {
             return password_verify($text, $hashed_value);
