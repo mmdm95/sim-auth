@@ -5,7 +5,9 @@ namespace Sim\Auth\Abstracts;
 use Sim\Auth\Config\ConfigParser;
 use Sim\Auth\DB;
 use Sim\Auth\Interfaces\IAuth;
+use Sim\Auth\Interfaces\IAuthVerifier;
 use Sim\Auth\Interfaces\IStorage;
+use Sim\Auth\Verifiers\Verifier;
 use Sim\Crypt\Crypt;
 use Sim\Crypt\Exceptions\CryptException;
 use Sim\Crypt\ICrypt;
@@ -26,6 +28,11 @@ abstract class AbstractStorage implements IStorage
      * @var ICrypt
      */
     protected $crypt = null;
+
+    /**
+     * @var Verifier
+     */
+    protected $verifier = null;
 
     /**
      * @var int
@@ -63,6 +70,18 @@ abstract class AbstractStorage implements IStorage
     protected $sus_key;
 
     /**
+     * @var array
+     */
+    protected $tables;
+
+    /********** table keys **********/
+
+    /**
+     * @var string
+     */
+    protected $users_key = 'users';
+
+    /**
      * AbstractStorage constructor.
      * @param int $expire_time
      * @param int $suspend_time
@@ -91,6 +110,21 @@ abstract class AbstractStorage implements IStorage
         ) {
             $this->crypt = new Crypt($crypt_keys['main'], $crypt_keys['assured']);
         }
+
+        $this->tables = $this->config_parser->getTables();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function resume()
+    {
+        $restoredVal = $this->restore();
+        if (!empty($restoredVal)) {
+            $this->updateSuspendTime();
+        }
+
+        return $this;
     }
 
     /**
@@ -107,8 +141,15 @@ abstract class AbstractStorage implements IStorage
      */
     public function getStatus(): int
     {
-        $this->hasExpired();
-        $this->hasSuspended();
         return $this->status;
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function setVerifier(IAuthVerifier $verifier)
+    {
+        $this->verifier = $verifier;
+        return $this;
     }
 }
