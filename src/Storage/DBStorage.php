@@ -186,7 +186,7 @@ class DBStorage extends AbstractStorage
     public function hasExpired(): bool
     {
         $expireVal = $this->restore();
-        $res = is_null($expireVal) || IAuth::STATUS_NONE === $this->getStatus();
+        $res = is_null($expireVal);
 
         if (IAuth::STATUS_ACTIVE === $this->getStatus() && $res) {
             $this->setStatus(IAuth::STATUS_EXPIRE);
@@ -201,9 +201,9 @@ class DBStorage extends AbstractStorage
     public function hasSuspended(): bool
     {
         $suspendVal = $this->cookie->get($this->sus_key, null);
-        $res = is_null($suspendVal) || IAuth::STATUS_NONE === $this->getStatus();
+        $res = is_null($suspendVal);
 
-        if (!$this->hasExpired() && IAuth::STATUS_ACTIVE === $this->getStatus() && $res) {
+        if (IAuth::STATUS_ACTIVE === $this->getStatus() && $res) {
             $this->setStatus(IAuth::STATUS_SUSPEND);
         }
 
@@ -221,13 +221,22 @@ class DBStorage extends AbstractStorage
     {
         if (UUIDUtil::isValid($session_uuid)) {
             $sessionColumns = $this->config_parser->getTablesColumn($this->sessions_key);
-            if ($this->db->delete(
-                $this->tables[$this->sessions_key],
-                "{$sessionColumns['uuid']}=:uuid",
-                [
-                    'uuid' => $session_uuid,
-                ]
-            )) {
+            if (
+                $this->db->count(
+                    $this->tables[$this->sessions_key],
+                    "{$sessionColumns['uuid']}=:uuid",
+                    [
+                        'uuid' => $session_uuid,
+                    ]
+                ) > 0
+            ) {
+                $this->db->delete(
+                    $this->tables[$this->sessions_key],
+                    "{$sessionColumns['uuid']}=:uuid",
+                    [
+                        'uuid' => $session_uuid,
+                    ]
+                );
                 $this->delete();
             }
         }

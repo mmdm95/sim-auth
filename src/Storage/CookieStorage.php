@@ -133,9 +133,11 @@ class CookieStorage extends AbstractStorage
     {
         $expireVal = $this->restore();
         $res = is_null($expireVal);
+
         if (IAuth::STATUS_ACTIVE === $this->getStatus() && $res) {
             $this->setStatus(IAuth::STATUS_EXPIRE);
         }
+
         return $res;
     }
 
@@ -145,9 +147,9 @@ class CookieStorage extends AbstractStorage
     public function hasSuspended(): bool
     {
         $suspendVal = $this->cookie->get($this->sus_key, null);
-        $res = is_null($suspendVal) || IAuth::STATUS_NONE === $this->getStatus();
+        $res = is_null($suspendVal);
 
-        if (!$this->hasExpired() && $this->getStatus() === IAuth::STATUS_ACTIVE && $res) {
+        if (IAuth::STATUS_ACTIVE === $this->getStatus() && $res) {
             $this->setStatus(IAuth::STATUS_SUSPEND);
         }
 
