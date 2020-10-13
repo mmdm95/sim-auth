@@ -29,6 +29,9 @@ class Verifier implements IAuthVerifier
      */
     public function verify(string $text, string $hashed_value): bool
     {
+        // if we don't have text or hashed value
+        if ('' === trim($text) || '' === trim($hashed_value)) return false;
+
         if (!in_array($this->algo, $this->built_in_algo) && is_string($this->algo)) {
             return hash($this->algo, $text) === $hashed_value;
         } else {
