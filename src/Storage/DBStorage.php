@@ -162,21 +162,22 @@ class DBStorage extends AbstractStorage
      */
     public function updateSuspendTime()
     {
-        if (!$this->hasExpired() && $this->evaluateStorageValue()) {
-            $this->cookie->remove($this->sus_key);
-            // suspend cookie
-            $setCookie = new SetCookie(
-                $this->sus_key,
-                'suspend_val',
-                time() + $this->suspend_time,
-                '/',
-                null,
-                null,
-                true
-            );
-            $this->cookie->set($setCookie);
-            $this->setStatus(IAuth::STATUS_ACTIVE);
-        }
+        if ($this->hasExpired() || !$this->evaluateStorageValue()) return $this;
+
+        $this->cookie->remove($this->sus_key);
+        // suspend cookie
+        $setCookie = new SetCookie(
+            $this->sus_key,
+            'suspend_val',
+            time() + $this->suspend_time,
+            '/',
+            null,
+            null,
+            true
+        );
+        $this->cookie->set($setCookie);
+        $this->setStatus(IAuth::STATUS_ACTIVE);
+
         return $this;
     }
 
@@ -319,7 +320,7 @@ class DBStorage extends AbstractStorage
         if (is_null($this->verifier)) return true;
 
         // verify password with user's password in db
-        $verified = $this->verifier->verify($this->$restoredVal['password'], $password);
+        $verified = $this->verifier->verify($this->$restoredVal['password'] ?? '', $password);
 
         if ($verified) return true;
 
