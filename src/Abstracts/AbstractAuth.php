@@ -2,7 +2,6 @@
 
 namespace Sim\Auth\Abstracts;
 
-use InvalidArgumentException;
 use PDO;
 use Sim\Auth\Config\ConfigParser;
 use Sim\Auth\DB;
@@ -185,10 +184,6 @@ abstract class AbstractAuth implements
         $this->pdo = $pdo_instance;
         $this->db = new DB($this->pdo);
 
-        if (empty($credentials)) {
-            throw new InvalidArgumentException('Please fill credentials array.');
-        }
-
         $this->crypt_keys = $crypt_keys;
 
         // load default config from _Config dir
@@ -264,7 +259,22 @@ abstract class AbstractAuth implements
      */
     public function getStatus(): int
     {
+        $this->storage->hasExpired();
+        $this->storage->hasSuspended();
         return $this->storage->getStatus();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isLoggedIn(): bool
+    {
+        // resume user if we can
+        if (IAUTH::STATUS_ACTIVE !== $this->getStatus() && !$this->isExpired()) {
+            $this->resume();
+        }
+
+        return IAUTH::STATUS_ACTIVE === $this->getStatus();
     }
 
     /**
@@ -272,7 +282,8 @@ abstract class AbstractAuth implements
      */
     public function isExpired(): bool
     {
-        return IAUTH::STATUS_EXPIRE === $this->getStatus();
+        return $this->storage->hasExpired()
+            && IAuth::STATUS_EXPIRE === $this->storage->getStatus();
     }
 
     /**
@@ -280,7 +291,16 @@ abstract class AbstractAuth implements
      */
     public function isSuspended(): bool
     {
-        return IAUTH::STATUS_SUSPEND === $this->getStatus();
+        return $this->storage->hasSuspended()
+            && IAuth::STATUS_SUSPEND === $this->storage->getStatus();
+    }
+
+    /**
+     * {@inheritdoc}
+     */
+    public function isNone(): bool
+    {
+        return IAuth::STATUS_NONE === $this->storage->getStatus();
     }
 
     /**
@@ -298,6 +318,7 @@ abstract class AbstractAuth implements
     public function setExpiration($timestamp)
     {
         $this->expire_time = AuthUtil::convertToIntTime($timestamp);
+        $this->storage->setExpireTime($this->expire_time);
         return $this;
     }
 
@@ -315,6 +336,7 @@ abstract class AbstractAuth implements
     public function setSuspendTime($timestamp)
     {
         $this->suspend_time = AuthUtil::convertToIntTime($timestamp);
+        $this->storage->setSuspendTime($this->suspend_time);
         return $this;
     }
 
@@ -328,11 +350,14 @@ abstract class AbstractAuth implements
 
     /**
      * {@inheritdoc}
+     * @throws CryptException
+     * @throws IDBException
      */
     public function setStorageType(int $type)
     {
         if ($this->isValidStorageType($type)) {
             $this->storage_type = $type;
+            $this->reinstantiateStorage();
         }
         return $this;
     }
@@ -354,9 +379,7 @@ abstract class AbstractAuth implements
     {
         if (!empty($namespace)) {
             $this->namespace = $namespace;
-
-            // create storage instance according to storage type
-            $this->storage = $this->getStorageInstance();
+            $this->reinstantiateStorage();
         }
         return $this;
     }
@@ -392,15 +415,39 @@ abstract class AbstractAuth implements
             throw new InvalidUserException('User is not exists!');
         }
 
+        $this->storage->store($user[0]);
+
         return $this;
     }
 
     /**
      * {@inheritdoc}
      */
+    public function resume()
+    {
+        $this->storage->resume();
+        return $this;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @throws IDBException
+     */
     public function logout()
     {
-        $this->storage->delete();
+        $res = false;
+        if ($this->getStorageType() === IAuth::STORAGE_DB) {
+            /**
+             * @var DBStorage $storage
+             */
+            $storage = $this->storage;
+            $res = $storage->destroy();
+        }
+
+        if ($this->getStorageType() !== IAuth::STORAGE_DB || $res) {
+            $this->storage->delete();
+        }
+
         return $this;
     }
 
@@ -427,19 +474,19 @@ abstract class AbstractAuth implements
 
     /**
      * {@inheritdoc}
-     * @throws CookieException
      * @throws IDBException
      */
-    public function destroySession(string $session_uuid)
+    public function destroySession(string $session_uuid): bool
     {
-        if ($this->getStorageType() === IAuth::STORAGE_DB) {
-            /**
-             * @var DBStorage $storage
-             */
-            $storage = $this->storage;
-            $storage->destroy($session_uuid);
-        }
-        return $this;
+        $sessionColumns = $this->config_parser->getTablesColumn($this->sessions_key);
+        $this->db->delete(
+            $this->tables[$this->sessions_key],
+            "{$sessionColumns['uuid']}=:uuid",
+            [
+                'uuid' => $session_uuid,
+            ]
+        );
+        return false;
     }
 
     /**
@@ -897,13 +944,25 @@ abstract class AbstractAuth implements
             $roleId = $this->getRoleID_($r);
             if (is_null($roleId)) continue;
 
-            $this->db->insert(
+            // get user's role count
+            $roleCount = $this->db->count(
                 $this->tables[$this->user_role_key],
+                "{$userRoleColumns['user_id']}=:u_id AND {$userRoleColumns['role_id']}=:r_id",
                 [
-                    $userRoleColumns['user_id'] => $userId,
-                    $userRoleColumns['role_id'] => $roleId,
+                    'u_id' => $userId,
+                    'r_id' => $roleId,
                 ]
             );
+            // add it to database if we have not that role there
+            if (0 === $roleCount) {
+                $this->db->insert(
+                    $this->tables[$this->user_role_key],
+                    [
+                        $userRoleColumns['user_id'] => $userId,
+                        $userRoleColumns['role_id'] => $roleId,
+                    ]
+                );
+            }
         }
 
         return $this;
@@ -935,6 +994,15 @@ abstract class AbstractAuth implements
         );
 
         return (bool)count($userAdminRoles);
+    }
+
+    /**
+     * @param string $name
+     * @return string
+     */
+    public function quoteSingleName(string $name): string
+    {
+        return $this->db->quoteName($name);
     }
 
     /**
@@ -1137,7 +1205,7 @@ abstract class AbstractAuth implements
             $roleId = $role;
         } else {
             $roleColumns = $this->config_parser->getTablesColumn($this->roles_key);
-            $role = $this->getFromResources(
+            $role = $this->getFromRoles(
                 $roleColumns['id'],
                 "{$roleColumns['name']}=:r",
                 ['r' => $role]);
@@ -1198,5 +1266,15 @@ abstract class AbstractAuth implements
             $where,
             $columns,
             $bind_values);
+    }
+
+    /**
+     * @throws CryptException
+     * @throws IDBException
+     */
+    private function reinstantiateStorage()
+    {
+        // create storage instance according to storage type
+        $this->storage = $this->getStorageInstance();
     }
 }
