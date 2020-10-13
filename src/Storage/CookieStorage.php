@@ -20,11 +20,6 @@ class CookieStorage extends AbstractStorage
     protected $cookie;
 
     /**
-     * @var string
-     */
-    protected $storage_name = '__Sim_Auth_Cookie__';
-
-    /**
      * CookieStorage constructor.
      * @param int $expire_time
      * @param int $suspend_time
@@ -48,9 +43,8 @@ class CookieStorage extends AbstractStorage
             $config_parser,
             $crypt_keys
         );
+
         $this->cookie = new Cookie($this->crypt);
-        $this->exp_key = $this->storage_name . '-' . $this->namespace . '-credentials';
-        $this->sus_key = $this->storage_name . '-' . $this->namespace . '-suspend_time';
     }
 
     /**

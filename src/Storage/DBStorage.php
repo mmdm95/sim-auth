@@ -33,11 +33,6 @@ class DBStorage extends AbstractStorage
      */
     protected $cookie;
 
-    /**
-     * @var string
-     */
-    protected $storage_name = '__Sim_Auth_DB__';
-
     /********** table keys **********/
 
     /**
@@ -76,9 +71,6 @@ class DBStorage extends AbstractStorage
         $this->pdo = $pdo_instance;
         $this->db = new DB($this->pdo);
         $this->cookie = new Cookie($this->crypt);
-        $this->exp_key = $this->storage_name . '-' . $this->namespace . '-uuid';
-        $this->sus_key = $this->storage_name . '-' . $this->namespace . '-suspend_time';
-
     }
 
     /**

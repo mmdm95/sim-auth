@@ -18,11 +18,6 @@ class SessionStorage extends AbstractStorage
     protected $session;
 
     /**
-     * @var string
-     */
-    protected $storage_name = '__Sim_Auth_Sess__';
-
-    /**
      * SessionStorage constructor.
      * @param int $expire_time
      * @param int $suspend_time
@@ -46,9 +41,8 @@ class SessionStorage extends AbstractStorage
             $config_parser,
             $crypt_keys
         );
+
         $this->session = new Session($this->crypt);
-        $this->exp_key = $this->storage_name . '.' . $this->namespace . '.credentials';
-        $this->sus_key = $this->storage_name . '.' . $this->namespace . '.suspend_time';
 
         // start session if not started yet
         $this->session->start();

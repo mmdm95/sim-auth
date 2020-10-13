@@ -57,7 +57,7 @@ abstract class AbstractStorage implements IStorage
     /**
      * @var string
      */
-    protected $storage_name;
+    protected $storage_name = '__Sim_Auth_Storage__';
 
     /**
      * @var string
@@ -102,6 +102,11 @@ abstract class AbstractStorage implements IStorage
         $this->suspend_time = $suspend_time;
         $this->namespace = $namespace;
         $this->config_parser = $config_parser;
+
+        // set expire key
+        $this->exp_key = $this->storage_name . '-' . $this->namespace . '-secret_key';
+        // set suspend key
+        $this->sus_key = $this->storage_name . '-' . $this->namespace . '-suspend_time';
 
         if (
             isset($crypt_keys['main'], $crypt_keys['assured']) &&
