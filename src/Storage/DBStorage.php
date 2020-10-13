@@ -212,35 +212,33 @@ class DBStorage extends AbstractStorage
 
     /**
      * Destroy session
-     * @param string $session_uuid
-     * @return static
-     * @throws CookieException
+     * @return bool
      * @throws IDBException
      */
-    public function destroy(string $session_uuid)
+    public function destroy(): bool
     {
-        if (UUIDUtil::isValid($session_uuid)) {
-            $sessionColumns = $this->config_parser->getTablesColumn($this->sessions_key);
-            if (
-                $this->db->count(
-                    $this->tables[$this->sessions_key],
-                    "{$sessionColumns['uuid']}=:uuid",
-                    [
-                        'uuid' => $session_uuid,
-                    ]
-                ) > 0
-            ) {
-                $this->db->delete(
-                    $this->tables[$this->sessions_key],
-                    "{$sessionColumns['uuid']}=:uuid",
-                    [
-                        'uuid' => $session_uuid,
-                    ]
-                );
-                $this->delete();
-            }
+        // if uuid is available from restored value
+        $sessionUUID = $this->restore();
+        if (!is_null($sessionUUID) && isset($sessionUUID['uuid'])) {
+            $sessionUUID = $sessionUUID['uuid'];
+        } else {
+            return false;
         }
-        return $this;
+
+        // check for uuid validation
+        if (UUIDUtil::isValid($sessionUUID)) {
+            $sessionColumns = $this->config_parser->getTablesColumn($this->sessions_key);
+            $this->db->delete(
+                $this->tables[$this->sessions_key],
+                "{$sessionColumns['uuid']}=:uuid",
+                [
+                    'uuid' => $sessionUUID,
+                ]
+            );
+            return true;
+        }
+
+        return false;
     }
 
     /**
