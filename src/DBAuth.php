@@ -63,8 +63,8 @@ class DBAuth extends AbstractAuth
     {
         // only login if status is not active
         if ($this->getStatus() === IAuth::STATUS_ACTIVE) return $this;
-        // if there is a something stored on device, then resume that user
-        if (!$this->isExpired()) {
+        // if there is something stored on device, then resume that user
+        if (!$this->isExpired() && !is_null($this->storage->restore())) {
             $this->resume();
             return $this;
         };
