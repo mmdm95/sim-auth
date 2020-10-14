@@ -312,7 +312,7 @@ class DBStorage extends AbstractStorage
         if (is_null($this->verifier)) return true;
 
         // verify password with user's password in db
-        $verified = $this->verifier->verify($this->$restoredVal['password'] ?? '', $password);
+        $verified = $this->verifier->verify($restoredVal['password'] ?? '', $password);
 
         if ($verified) return true;
 
