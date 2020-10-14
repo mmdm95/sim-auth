@@ -337,6 +337,7 @@ abstract class AbstractAuth implements
     {
         $this->suspend_time = AuthUtil::convertToIntTime($timestamp);
         $this->storage->setSuspendTime($this->suspend_time);
+        $this->extendSuspendTime();
         return $this;
     }
 
@@ -357,7 +358,7 @@ abstract class AbstractAuth implements
     {
         if ($this->isValidStorageType($type)) {
             $this->storage_type = $type;
-            $this->reinstantiateStorage();
+            $this->reInstantiateStorage();
         }
         return $this;
     }
@@ -379,7 +380,7 @@ abstract class AbstractAuth implements
     {
         if (!empty($namespace)) {
             $this->namespace = $namespace;
-            $this->reinstantiateStorage();
+            $this->reInstantiateStorage();
         }
         return $this;
     }
@@ -1272,9 +1273,14 @@ abstract class AbstractAuth implements
      * @throws CryptException
      * @throws IDBException
      */
-    private function reinstantiateStorage()
+    private function reInstantiateStorage()
     {
         // create storage instance according to storage type
         $this->storage = $this->getStorageInstance();
+        $this->storage->setExpireTime($this->expire_time);
+        $this->storage->setSuspendTime($this->suspend_time);
+
+        // resume previous storage if it starts
+        $this->resume();
     }
 }
