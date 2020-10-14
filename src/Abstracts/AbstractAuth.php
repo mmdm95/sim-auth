@@ -5,6 +5,7 @@ namespace Sim\Auth\Abstracts;
 use PDO;
 use Sim\Auth\Config\ConfigParser;
 use Sim\Auth\DB;
+use Sim\Auth\Exceptions\ConfigException;
 use Sim\Auth\Exceptions\InvalidStorageTypeException;
 use Sim\Auth\Exceptions\InvalidUserException;
 use Sim\Auth\Interfaces\IAuth;
@@ -18,7 +19,6 @@ use Sim\Auth\Storage\CookieStorage;
 use Sim\Auth\Storage\DBStorage;
 use Sim\Auth\Storage\SessionStorage;
 use Sim\Auth\Utils\AuthUtil;
-use Sim\Cookie\Exceptions\CookieException;
 use Sim\Crypt\Exceptions\CryptException;
 
 abstract class AbstractAuth implements
@@ -98,11 +98,6 @@ abstract class AbstractAuth implements
      * @var ConfigParser
      */
     protected $config_parser;
-
-    /**
-     * @var bool $merge_config
-     */
-    protected $merge_config = false;
 
     /**
      * @var IStorage|null
@@ -208,23 +203,15 @@ abstract class AbstractAuth implements
     }
 
     /**
-     * @param bool $answer
-     * @return static
-     */
-    public function mergeConfig(bool $answer)
-    {
-        $this->merge_config = $answer;
-        return $this;
-    }
-
-    /**
      * @param array $config
+     * @param bool $merge_config
      * @return static
      * @throws IDBException
+     * @throws ConfigException
      */
-    public function setConfig(array $config)
+    public function setConfig(array $config, bool $merge_config = false)
     {
-        if ($this->merge_config) {
+        if ($merge_config) {
             if (!empty($config)) {
                 $this->config = array_merge_recursive($this->default_config, $config);
             }
