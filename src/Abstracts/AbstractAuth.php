@@ -194,12 +194,19 @@ abstract class AbstractAuth implements
                 'Storage must be one of [db] or [cookie] or [session]. Use [IAuth] constants please'
             );
         } else {
+            // actually it instantiate storage
             $this->setStorageType($storage_type);
         }
 
         // is must be at the end because storage instance
         // will create after setting namespace
         $this->setNamespace($namespace);
+
+        // set status to active if there is a session/cookie
+        // that is set before
+        if (!is_null($this->storage->restore())) {
+            $this->storage->setStatus(IAuth::STATUS_ACTIVE);
+        }
     }
 
     /**
