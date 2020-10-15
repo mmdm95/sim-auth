@@ -324,7 +324,6 @@ abstract class AbstractAuth implements
     {
         $this->suspend_time = AuthUtil::convertToIntTime($timestamp);
         $this->storage->setSuspendTime($this->suspend_time);
-        $this->extendSuspendTime();
         return $this;
     }
 
@@ -1266,8 +1265,5 @@ abstract class AbstractAuth implements
         $this->storage = $this->getStorageInstance();
         $this->storage->setExpireTime($this->expire_time);
         $this->storage->setSuspendTime($this->suspend_time);
-
-        // resume previous storage if it starts
-        $this->resume();
     }
 }
