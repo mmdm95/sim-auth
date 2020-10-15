@@ -10,6 +10,7 @@ use Sim\Auth\Interfaces\IAuth;
 use Sim\Auth\Interfaces\IAuthVerifier;
 use Sim\Auth\Interfaces\IDBException;
 use Sim\Auth\Verifiers\Verifier;
+use Sim\Crypt\Exceptions\CryptException;
 
 class DBAuth extends AbstractAuth
 {
@@ -28,7 +29,7 @@ class DBAuth extends AbstractAuth
      * @param array|null $config
      * @throws Exceptions\InvalidStorageTypeException
      * @throws IDBException
-     * @throws \Sim\Crypt\Exceptions\CryptException
+     * @throws CryptException
      */
     public function __construct(
         PDO $pdo_instance,
