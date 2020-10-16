@@ -481,11 +481,11 @@ abstract class AbstractAuth implements
     /**
      * @return mixed
      */
-    public function getCurrentUser()
+    public function getCurrentUser(): ?array
     {
         $currentUser = $this->storage->restore();
         if (is_null($currentUser)) return null;
-        return $currentUser['id'];
+        return $currentUser;
     }
 
     /**
@@ -1140,7 +1140,7 @@ abstract class AbstractAuth implements
     {
         $userId = null;
         if (is_null($username)) {
-            $userId = $this->getCurrentUser();
+            $userId = $this->getCurrentUser()['id'] ?? null;
         } elseif (is_int($username)) {
             $userId = $username;
         } else {
