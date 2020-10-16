@@ -263,11 +263,6 @@ abstract class AbstractAuth implements
      */
     public function isLoggedIn(): bool
     {
-        // resume user if we can
-        if (IAUTH::STATUS_ACTIVE !== $this->getStatus() && !$this->isExpired()) {
-            $this->resume();
-        }
-
         return IAUTH::STATUS_ACTIVE === $this->getStatus();
     }
 
