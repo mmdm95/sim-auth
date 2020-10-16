@@ -4,6 +4,7 @@ namespace Sim\Auth\Storage;
 
 use Sim\Auth\Abstracts\AbstractStorage;
 use Sim\Auth\Config\ConfigParser;
+use Sim\Auth\Exceptions\ConfigException;
 use Sim\Auth\Interfaces\IAuth;
 use Sim\Auth\Interfaces\IDBException;
 use Sim\Cookie\Cookie;
@@ -54,11 +55,14 @@ class CookieStorage extends AbstractStorage
      */
     public function store(array $credentials)
     {
-        $this->updateSuspendTime();
+        $userId = $this->getUserID($credentials);
+
         // expire cookie
         $setCookie = new SetCookie(
             $this->exp_key,
-            json_encode($credentials),
+            json_encode(
+                array_merge($credentials, ['id' => $userId])
+            ),
             time() + $this->expire_time,
             '/',
             null,
@@ -67,6 +71,9 @@ class CookieStorage extends AbstractStorage
         );
         $this->cookie->set($setCookie);
         $this->setStatus(IAuth::STATUS_ACTIVE);
+
+        $this->updateSuspendTime();
+
         return $this;
     }
 
@@ -102,7 +109,7 @@ class CookieStorage extends AbstractStorage
      */
     public function updateSuspendTime()
     {
-        if(!$this->hasExpired() && $this->evaluateStorageValue()) {
+        if (!$this->hasExpired() && $this->evaluateStorageValue()) {
             $this->cookie->remove($this->sus_key);
             // suspend cookie
             $setCookie = new SetCookie(
@@ -148,6 +155,30 @@ class CookieStorage extends AbstractStorage
         }
 
         return $res;
+    }
+
+    /**
+     * @param array $credentials
+     * @return int|null
+     * @throws IDBException
+     * @throws ConfigException
+     */
+    protected function getUserID(array $credentials): ?int
+    {
+        $userId = null;
+
+        $userColumns = $this->config_parser->getTablesColumn($this->users_key);
+        $credentialColumns = $this->config_parser->getCredentialColumns();
+        $user = $this->db->getFrom(
+            $this->tables[$this->users_key],
+            "{$this->db->quoteName($credentialColumns['username'])}=:u",
+            $userColumns['id'],
+            ['u' => $credentials['username']]);
+        if (count($user)) {
+            $userId = $user[0][$userColumns['id']];
+        }
+
+        return $userId;
     }
 
     /**

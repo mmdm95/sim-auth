@@ -7,6 +7,7 @@ use PDO;
 use Sim\Auth\Abstracts\AbstractStorage;
 use Sim\Auth\Config\ConfigParser;
 use Sim\Auth\DB;
+use Sim\Auth\Exceptions\ConfigException;
 use Sim\Auth\Interfaces\IAuth;
 use Sim\Auth\Interfaces\IDBException;
 use Sim\Auth\Utils\AuthUtil;
@@ -109,7 +110,10 @@ class DBStorage extends AbstractStorage
         )) {
             $setCookie = new SetCookie(
                 $this->exp_key,
-                json_encode(['uuid' => $uuid]),
+                json_encode([
+                    'id' => $userId,
+                    'uuid' => $uuid,
+                ]),
                 time() + $this->expire_time,
                 '/',
                 null,
@@ -118,6 +122,8 @@ class DBStorage extends AbstractStorage
             );
             $this->cookie->set($setCookie);
             $this->setStatus(IAuth::STATUS_ACTIVE);
+
+            $this->updateSuspendTime();
         }
         return $this;
     }
@@ -247,7 +253,7 @@ class DBStorage extends AbstractStorage
      * @param array $credentials
      * @return int|null
      * @throws IDBException
-     * @throws \Sim\Auth\Exceptions\ConfigException
+     * @throws ConfigException
      */
     protected function getUserID(array $credentials): ?int
     {
