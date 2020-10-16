@@ -79,7 +79,7 @@ interface IRole
     public function getAdminRolesName(): array;
 
     /**
-     * Get current/loggedIn user's role
+     * Get a user's role
      *
      * @param string|int $username
      * @return array
