@@ -11,6 +11,9 @@ class Verifier implements IAuthVerifier
      */
     protected $algo;
 
+    /**
+     * @var array
+     */
     protected $built_in_algo = [
         PASSWORD_DEFAULT, PASSWORD_BCRYPT,
     ];
