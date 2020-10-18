@@ -113,7 +113,6 @@ abstract class AbstractBaseAuth
 
     /**
      * @return static
-     * @throws IDBException
      */
     public function runConfig()
     {
