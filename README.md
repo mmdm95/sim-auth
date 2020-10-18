@@ -53,6 +53,18 @@ Note: Please use `utf8mb4` collations.
     
     - password (VARCHAR(255) NOT NULL)
 
+- api_keys
+
+    This table is to store all api users and the keys.
+    
+    Least columns of this table should be:
+    
+    - id (INT(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT)
+    
+    - username (VARCHAR(20) NOT NULL)
+    
+    - api_key (VARCHAR(255) NOT NULL)
+
 - roles
 
     This table contains all roles.
@@ -198,9 +210,42 @@ For more info about these two keys see [this link][2]
 
 - DBAuth
 
+- APIAuth
+
 ## Shared Methods
 
+#### AbstractBaseAuth
+
 All connections have below methods:
+
+```php
+__construct(PDO $pdo_instance, ?array $config = null);
+```
+
+`$pdo_instance`: Argument is `PDO` connection that explained above.
+
+`$config`: To change the `Architecture` mentioned above, you can 
+pass and array to change the config or `null` for default behavior.
+
+#### `setConfig(array $config, bool $merge_config = false)`
+
+With this method you can change `Architecture` signatures. If you 
+need to merge default configuration and passed configuration, 
+you can pass `true` as seconds parameter.
+
+#### `runConfig()`
+
+The configuration can build internally by library. Thi function 
+parse the configuration of library.
+
+**Note:** If you build tables from configuration by yourself, 
+there is no need to call this method, but please before any 
+table creation, call this method to make your tables.
+
+#### AbstractAuth
+
+Some connections (that will say in each connection) have 
+below methods:
 
 ```php
 __construct(
@@ -212,7 +257,7 @@ __construct(
 );
 ```
 
-`$pdo_instance`: Argument is `PDO` connection that explained above.
+`$pdo_instance`: See constructor of [AbstractBaseAuth][8].
 
 `$namespace`: You can specify a namespace to separate each logic of 
 your application. For example a `home` namespace for users login and an 
@@ -248,23 +293,7 @@ store needed information in where. There are three types of storage:
 
 (They are available under `Sim\Auth\Interfaces` namespace)
 
-`$config`: To change the `Architecture` mentioned above, you can 
-pass and array to change the config or `null` for default behavior.
-
-#### `setConfig(array $config, bool $merge_config = false)`
-
-With this method you can change `Architecture` signatures. If you 
-need to merge default configuration and passed configuration, 
-you can pass `true` as seconds parameter.
-
-#### `runConfig()`
-
-The configuration can build internally by library. Thi function 
-parse the configuration of library.
-
-**Note:** If you build tables from configuration by yourself, 
-there is no need to call this method, but please before any 
-table creation, call this method to make your tables.
+`$config`: See constructor of [AbstractBaseAuth][8].
 
 #### `getStatus(): int`
 
@@ -588,6 +617,8 @@ Quote a column or table name or anything that needed to quote.
 
 #### `DBAuth`
 
+Contains all of [AbstractAuth][3] and below extra information.
+
 ```php
 // this is constructor
 $auth = new DBAuth (
@@ -600,20 +631,20 @@ $auth = new DBAuth (
 );
 ```
 
-`$pdo_instance`: See constructor of [shared methods][3].
+`$pdo_instance`: See constructor of [AbstractAuth][3].
 
-`$namespace`: See constructor of [shared methods][3].
+`$namespace`: See constructor of [AbstractAuth][3].
 
-`$crypt_keys`: See constructor of [shared methods][3].
+`$crypt_keys`: See constructor of [AbstractAuth][3].
 
 `$algo`: Algorithm to verify the password. It could be one of 
 `PASSWORD_DEFAULT` or `PASSWORD_BCRYPT` to verify with 
 `password_verify` function or other strings to verify with 
 `hash` function.
 
-`$storage_type`: See constructor of [shared methods][3].
+`$storage_type`: See constructor of [AbstractAuth][3].
 
-`$config`: See constructor of [shared methods][3].
+`$config`: See constructor of [AbstractAuth][3].
 
 #### `login(array $credentials, string $extra_query = null, array $bind_values = [])`
 
@@ -673,6 +704,65 @@ try {
 }
 ```
 
+#### `APIAuth`
+
+Contains all of [AbstractBaseAuth][8] and below extra information.
+
+#### `validate(array $credentials, string $extra_query = null, array $bind_values = []): bool`
+                                                                  
+`$credentials` should be like below structure:
+
+```php
+// keys MUST be same as below
+[
+  'username' => provided username,
+  'api_key' => provided api key,
+]
+```
+
+If there are more conditions to check for a user, you can pass them 
+by `$extra_query` parameter and it MUST be parameterized.
+
+**Note:** You should know that the verify will check inside of a 
+joined tables of `api_keys` and `roles`. So if there is a condition, 
+it's better to have the table's name before any column. 
+
+**Note:** You should quote your columns by yourself or use 
+`quoteSingleName` that explained before.
+
+```php
+// for example check if user is allowed or something
+$auth->verify([
+    'username' => provided username,
+    'api_key' => provided api key,
+], 'api_keys.allowed=:allow', [
+    'allow' => 1,
+]);
+```     
+
+**Note:** To get the error of verify, put it in try, catch block.
+
+```php
+try {
+    $auth->verify([
+        'username' => provided username,
+        'api_key' => provided api key,
+    ]);
+} catch (\Sim\Auth\Exceptions\IncorrectAPIKeyException $e) {
+    // do something according to error
+    // eg.
+    echo 'Username or api key is incorrect!';
+} catch (\Sim\Auth\Exceptions\InvalidUserException $e) {
+    // do something according to error
+    // eg.
+    echo 'Username or api key is incorrect!';
+} catch (\Sim\Auth\Interfaces\IDBException $e) {
+    // do something according to error
+    // eg.
+    echo 'Failed database connection!';
+}
+```
+
 # Dependencies
 There is some dependencies here including:
  
@@ -694,7 +784,8 @@ Under MIT license.
 
 [1]: https://stackoverflow.com/questions/766809/whats-the-difference-between-utf8-general-ci-and-utf8-unicode-ci
 [2]: https://github.com/mmdm95/sim-crypt
-[3]: #shared-methods
+[8]: #abstractbaseauth
+[3]: #abstractauth
 [4]: https://github.com/mmdm95/sim-crypt
 [5]: https://github.com/mmdm95/sim-cookie
 [6]: https://github.com/mmdm95/sim-session
