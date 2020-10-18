@@ -3,11 +3,8 @@
 namespace Sim\Auth\Abstracts;
 
 use PDO;
-use Sim\Auth\Config\ConfigParser;
-use Sim\Auth\Exceptions\ConfigException;
 use Sim\Auth\Exceptions\InvalidStorageTypeException;
 use Sim\Auth\Exceptions\InvalidUserException;
-use Sim\Auth\Helpers\DB;
 use Sim\Auth\Interfaces\IAuth;
 use Sim\Auth\Interfaces\IAuthenticator;
 use Sim\Auth\Interfaces\IAuthorizer;
@@ -21,22 +18,12 @@ use Sim\Auth\Storage\SessionStorage;
 use Sim\Auth\Utils\AuthUtil;
 use Sim\Crypt\Exceptions\CryptException;
 
-abstract class AbstractAuth implements
+abstract class AbstractAuth extends AbstractBaseAuth implements
     IAuthenticator,
     IAuthorizer,
     IResource,
     IRole
 {
-    /**
-     * @var PDO $pdo
-     */
-    protected $pdo;
-
-    /**
-     * @var DB
-     */
-    protected $db;
-
     /**
      * @var array
      * Has following structure:
@@ -46,31 +33,6 @@ abstract class AbstractAuth implements
      * ]
      */
     protected $crypt_keys = [];
-
-    /**
-     * @var array $default_config
-     */
-    protected $default_config = [];
-
-    /**
-     * @var array $config
-     */
-    protected $config = [];
-
-    /**
-     * @var array $tables
-     */
-    protected $tables = [];
-
-    /**
-     * @var array
-     * Format:
-     * [
-     *   'username' => provided username column by user,
-     *   'password' => provided password column by user,
-     * ]
-     */
-    protected $credential_columns = [];
 
     /**
      * @var int $expire_time
@@ -93,11 +55,6 @@ abstract class AbstractAuth implements
      * @var string $namespace
      */
     protected $namespace = 'default';
-
-    /**
-     * @var ConfigParser
-     */
-    protected $config_parser;
 
     /**
      * @var IStorage|null
@@ -176,18 +133,9 @@ abstract class AbstractAuth implements
         ?array $config = null
     )
     {
-        $this->pdo = $pdo_instance;
-        $this->db = new DB($this->pdo);
+        parent::__construct($pdo_instance, $config);
 
         $this->crypt_keys = $crypt_keys;
-
-        // load default config from _Config dir
-        $this->default_config = include __DIR__ . '/../_Config/config.php';
-        if (!is_null($config)) {
-            $this->setConfig($config);
-        } else {
-            $this->setConfig($this->default_config);
-        }
 
         if (!$this->isValidStorageType($storage_type)) {
             throw new InvalidStorageTypeException(
@@ -207,45 +155,6 @@ abstract class AbstractAuth implements
         if (!is_null($this->storage->restore())) {
             $this->storage->setStatus(IAuth::STATUS_ACTIVE);
         }
-    }
-
-    /**
-     * @param array $config
-     * @param bool $merge_config
-     * @return static
-     * @throws IDBException
-     * @throws ConfigException
-     */
-    public function setConfig(array $config, bool $merge_config = false)
-    {
-        if ($merge_config) {
-            if (!empty($config)) {
-                $this->config = array_merge_recursive($this->default_config, $config);
-            }
-        } else {
-            $this->config = $config;
-        }
-
-        // parse config
-        $this->config_parser = new ConfigParser($this->config, $this->pdo);
-
-        // get tables
-        $this->tables = $this->config_parser->getTables();
-
-        // get credential columns
-        $this->credential_columns = $this->config_parser->getCredentialColumns();
-
-        return $this;
-    }
-
-    /**
-     * @return static
-     * @throws IDBException
-     */
-    public function runConfig()
-    {
-        $this->config_parser->up();
-        return $this;
     }
 
     /**
