@@ -6,8 +6,8 @@ use Jenssegers\Agent\Agent;
 use PDO;
 use Sim\Auth\Abstracts\AbstractStorage;
 use Sim\Auth\Config\ConfigParser;
-use Sim\Auth\DB;
 use Sim\Auth\Exceptions\ConfigException;
+use Sim\Auth\Helpers\DB;
 use Sim\Auth\Interfaces\IAuth;
 use Sim\Auth\Interfaces\IDBException;
 use Sim\Auth\Utils\AuthUtil;
@@ -23,11 +23,6 @@ class DBStorage extends AbstractStorage
      * @var PDO
      */
     protected $pdo;
-
-    /**
-     * @var DB
-     */
-    protected $db;
 
     /**
      * @var ICookie
