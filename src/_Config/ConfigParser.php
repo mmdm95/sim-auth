@@ -58,8 +58,8 @@ class ConfigParser
      * @var array
      */
     protected $table_aliases = [
-        'users', 'roles', 'resources', 'user_role',
-        'role_res_perm', 'user_res_perm', 'sessions'
+        'users', 'roles', 'api_keys', 'resources', 'user_role',
+        'api_key_role', 'role_res_perm', 'user_res_perm', 'sessions'
     ];
 
     /**
@@ -92,22 +92,33 @@ class ConfigParser
 
     /**
      * @return static
-     * @throws IDBException
      */
     public function up()
     {
         // change database collation
-        $this->db->changeDBCollation();
+        try {
+            $this->db->changeDBCollation();
+        } catch (IDBException $e) {
+            // do nothing
+        } catch (\Exception $e) {
+            // do nothing
+        }
 
         if (!empty($this->structures)) {
             // iterate through all tables for their structure
             foreach ($this->structures as $tableName => $items) {
                 // create table is not exists
-                $this->db->createTableIfNotExists(
-                    $tableName,
-                    $items[$this->columns_key]['id'],
-                    $items[$this->types_key]['id']
-                );
+                try {
+                    $this->db->createTableIfNotExists(
+                        $tableName,
+                        $items[$this->columns_key]['id'],
+                        $items[$this->types_key]['id']
+                    );
+                } catch (IDBException $e) {
+                    // do nothing
+                } catch (\Exception $e) {
+                    // do nothing
+                }
 
                 // iterate through all columns and create column if not exists
                 foreach ($items[$this->columns_key] as $columnKey => $columnName) {
@@ -117,7 +128,13 @@ class ConfigParser
                         is_string($typeKey) &&
                         !empty($typeKey)
                     ) {
-                        $this->db->createColumnIfNotExists($tableName, $columnName, $typeKey);
+                        try {
+                            $this->db->createColumnIfNotExists($tableName, $columnName, $typeKey);
+                        } catch (IDBException $e) {
+                            // do nothing
+                        } catch (\Exception $e) {
+                            // do nothing
+                        }
                     }
                 }
             }
@@ -127,7 +144,13 @@ class ConfigParser
                 if (isset($items[$this->constraints_key])) {
                     foreach ($items[$this->constraints_key] as $constraint) {
                         if (is_string($constraint) && !empty($constraint)) {
-                            $this->db->addConstraint($tableName, $constraint);
+                            try {
+                                $this->db->addConstraint($tableName, $constraint);
+                            } catch (IDBException $e) {
+                                // do nothing
+                            } catch (\Exception $e) {
+                                // do nothing
+                            }
                         }
                     }
                 }
