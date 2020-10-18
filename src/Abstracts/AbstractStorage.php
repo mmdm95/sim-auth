@@ -3,7 +3,7 @@
 namespace Sim\Auth\Abstracts;
 
 use Sim\Auth\Config\ConfigParser;
-use Sim\Auth\DB;
+use Sim\Auth\Helpers\DB;
 use Sim\Auth\Interfaces\IAuth;
 use Sim\Auth\Interfaces\IAuthVerifier;
 use Sim\Auth\Interfaces\IStorage;

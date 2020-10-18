@@ -4,10 +4,10 @@ namespace Sim\Auth\Abstracts;
 
 use PDO;
 use Sim\Auth\Config\ConfigParser;
-use Sim\Auth\DB;
 use Sim\Auth\Exceptions\ConfigException;
 use Sim\Auth\Exceptions\InvalidStorageTypeException;
 use Sim\Auth\Exceptions\InvalidUserException;
+use Sim\Auth\Helpers\DB;
 use Sim\Auth\Interfaces\IAuth;
 use Sim\Auth\Interfaces\IAuthenticator;
 use Sim\Auth\Interfaces\IAuthorizer;
