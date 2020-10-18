@@ -80,6 +80,23 @@ try {
     } catch (\Sim\Auth\Interfaces\IDBException $e) {
         echo $e->getMessage();
     }
+
+    /********************************************************************/
+
+    $apiAuth = new \Sim\Auth\APIAuth($pdo);
+
+    try {
+//        $apiAuth->validate([
+//            'username' => 'the username',
+//            'api_key' => 'the api key',
+//        ]);
+    } catch (\Sim\Auth\Exceptions\IncorrectAPIKeyException $e) {
+        echo $e->getMessage();
+    } catch (\Sim\Auth\Exceptions\InvalidUserException $e) {
+        echo $e->getMessage();
+    } catch (\Sim\Auth\Interfaces\IDBException $e) {
+        echo $e->getMessage();
+    }
 } catch (\Sim\Auth\Interfaces\IDBException $e) {
     echo 'Message: ' . $e->getMessage() . PHP_EOL;
     echo 'Line:' . $e->getLine() . PHP_EOL;
