@@ -46,6 +46,22 @@ return [
                 'ADD CONSTRAINT UC_Username UNIQUE (id,username)',
             ],
         ],
+        'api_keys' => [
+            'table_name' => 'api_keys',
+            'columns' => [
+                'id' => 'id',
+                'username' => 'username',
+                'api_key' => 'api_key',
+            ],
+            'types' => [
+                'id' => 'INT(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
+                'username' => 'VARCHAR(20) NOT NULL',
+                'api_key' => 'VARCHAR(255) NOT NULL',
+            ],
+            'constraints' => [
+                'ADD CONSTRAINT UC_AK_Username UNIQUE (id,username)',
+            ],
+        ],
         'roles' => [
             'table_name' => 'roles',
             'columns' => [
