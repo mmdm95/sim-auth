@@ -1,6 +1,6 @@
 <?php
 
-namespace Sim\Auth;
+namespace Sim\Auth\Helpers;
 
 use PDO;
 use PDOStatement;
