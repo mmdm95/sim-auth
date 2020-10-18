@@ -54,7 +54,12 @@ class APIAuth extends AbstractBaseAuth implements IAuthValidator
         array $bind_values = []
     ): bool
     {
+        if(!isset($credentials['username'], $credentials['api_key']) || empty($credentials['username']) || empty($credentials['api_key'])) {
+            throw new \InvalidArgumentException('Provided credentials does not have correct structure.');
+        }
+
         $apiColumns = $this->config_parser->getTablesColumn($this->api_keys_key);
+        $apiKeyRoleColumns = $this->config_parser->getTablesColumn($this->api_key_role_key);
 
         $where = "{$apiColumns['username']}=:__api_auth_username_value__";
         if (!empty($extra_query)) {
@@ -69,8 +74,13 @@ class APIAuth extends AbstractBaseAuth implements IAuthValidator
         }
 
         // get user from database
-        $user = $this->db->getFrom(
+        $user = $this->db->getFromJoin(
+            'INNER',
             $this->tables[$this->api_keys_key],
+            $this->tables[$this->api_key_role_key],
+            "{$this->db->quoteName($this->tables[$this->api_keys_key])}.{$this->db->quoteName($apiColumns['id'])}" .
+            "=" .
+            "{$this->db->quoteName($this->tables[$this->api_key_role_key])}.{$this->db->quoteName($apiKeyRoleColumns['api_key_id'])}",
             $where,
             $apiColumns['api_key'],
             $bind_values
@@ -83,7 +93,7 @@ class APIAuth extends AbstractBaseAuth implements IAuthValidator
         $apiKey = $user[0][$apiColumns['api_key']];
 
         // verify password with user's password in db
-        $verified = $this->verifier->verify($credentials['password'], $apiKey);
+        $verified = $this->verifier->verify($credentials['api_key'], $apiKey);
 
         if (!$verified) {
             throw new IncorrectAPIKeyException('API key is not valid!');

@@ -62,6 +62,10 @@ class DBAuth extends AbstractAuth
         array $bind_values = []
     )
     {
+        if (!isset($credentials['username'], $credentials['password']) || empty($credentials['username']) || empty($credentials['password'])) {
+            throw new \InvalidArgumentException('Provided credentials does not have correct structure.');
+        }
+
         // only login if status is not active
         if ($this->getStatus() === IAuth::STATUS_ACTIVE) return $this;
         // if there is something stored on device, then resume that user
