@@ -102,7 +102,7 @@ class DBAuth extends AbstractAuth
             throw new InvalidUserException('User is not exists!');
         }
 
-        $password = $user[0]['password'];
+        $password = $user[0][$userColumns['password']];
 
         // verify password with user's password in db
         $verified = $this->verifier->verify($credentials['password'], $password);
