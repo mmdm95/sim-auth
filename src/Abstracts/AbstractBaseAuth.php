@@ -58,6 +58,11 @@ abstract class AbstractBaseAuth
     protected $api_keys_key = 'api_keys';
 
     /**
+     * @var string
+     */
+    protected $api_key_role_key = 'api_key_role';
+
+    /**
      * AbstractBaseAuth constructor.
      * @param PDO $pdo_instance
      * @param array|null $config
