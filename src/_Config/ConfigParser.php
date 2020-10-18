@@ -3,8 +3,8 @@
 namespace Sim\Auth\Config;
 
 use PDO;
-use Sim\Auth\DB;
 use Sim\Auth\Exceptions\ConfigException;
+use Sim\Auth\Helpers\DB;
 use Sim\Auth\Interfaces\IDBException;
 
 class ConfigParser
