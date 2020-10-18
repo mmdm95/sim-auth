@@ -4,15 +4,30 @@ use Sim\Auth\DBAuth;
 
 // include with composer
 include_once '../../vendor/autoload.php';
-// or include using autoloader class of each library
-//include_once '../../autoloader.php';
-//include_once '../../vendor/mmdm/sim-crypt/autoloader.php';
-//include_once '../../vendor/mmdm/sim-session/autoloader.php';
-//include_once '../../vendor/mmdm/sim-cookie/autoloader.php';
-// other libraries included
 
-// OK this is not useful when you have a lot of library
-// so..... use composer instead :)
+$err_response = function ($message, $line, $file) {
+    return json_encode([
+        'message' => $message,
+        'line' => $line,
+        'file' => $file,
+    ]);
+};
+
+header("Access-Control-Allow-Origin: *");
+header("Content-Type: application/json; charset=UTF-8");
+header("Access-Control-Allow-Methods: OPTIONS,GET,POST,PUT,DELETE");
+header("Access-Control-Max-Age: 3600");
+header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
+
+$uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
+$uri = explode( '/', $uri );
+
+// all of our endpoints start with /person
+// everything else results in a 404 Not Found
+if ($uri[1] !== 'api') {
+    header("HTTP/1.1 404 Not Found");
+    exit();
+}
 
 $host = '127.0.0.1';
 $db = 'test';
@@ -68,28 +83,28 @@ try {
         // destroy uuid - passed
 //        $dbAuth->destroySession('d95d2a65-2221-4e92-862a-8e1cf64ab0f6');
 
-        echo PHP_EOL;
-        var_dump('logged in? ', $dbAuth->isLoggedIn());
-        var_dump('expired? ', $dbAuth->isExpired());
-        var_dump('suspended? ', $dbAuth->isSuspended());
-        var_dump('none status? ', $dbAuth->isNone());
+//        echo PHP_EOL;
+//        var_dump('logged in? ', $dbAuth->isLoggedIn());
+//        var_dump('expired? ', $dbAuth->isExpired());
+//        var_dump('suspended? ', $dbAuth->isSuspended());
+//        var_dump('none status? ', $dbAuth->isNone());
+
+        $validations = \Sim\Auth\Helpers\BasicAuth::parse();
+
+        echo json_encode(array_merge([
+            'success' => 'It was a successful try',
+        ], $validations, [$_SERVER['HTTP_X_API_KEY'] ?? '', \Sim\Auth\Utils\APIUtil::generateAPIKey()]));
     } catch (\Sim\Auth\Exceptions\IncorrectPasswordException $e) {
-        echo $e->getMessage();
+        echo  $err_response($e->getMessage(), $e->getLine(), $e->getFile());
     } catch (\Sim\Auth\Exceptions\InvalidUserException $e) {
-        echo $e->getMessage();
+        echo  $err_response($e->getMessage(), $e->getLine(), $e->getFile());
     } catch (\Sim\Auth\Interfaces\IDBException $e) {
-        echo $e->getMessage();
+        echo  $err_response($e->getMessage(), $e->getLine(), $e->getFile());
     }
 } catch (\Sim\Auth\Interfaces\IDBException $e) {
-    echo 'Message: ' . $e->getMessage() . PHP_EOL;
-    echo 'Line:' . $e->getLine() . PHP_EOL;
-    echo 'File: ' . $e->getFile() . PHP_EOL;
+    echo $err_response($e->getMessage(), $e->getLine(), $e->getFile());
 } catch (\Sim\Auth\Interfaces\IStorageException $e) {
-    echo 'Message: ' . $e->getMessage() . PHP_EOL;
-    echo 'Line:' . $e->getLine() . PHP_EOL;
-    echo 'File: ' . $e->getFile() . PHP_EOL;
+    echo $err_response($e->getMessage(), $e->getLine(), $e->getFile());
 } catch (\Sim\Crypt\Exceptions\CryptException $e) {
-    echo 'Message: ' . $e->getMessage() . PHP_EOL;
-    echo 'Line:' . $e->getLine() . PHP_EOL;
-    echo 'File: ' . $e->getFile() . PHP_EOL;
+    echo $err_response($e->getMessage(), $e->getLine(), $e->getFile());
 }
