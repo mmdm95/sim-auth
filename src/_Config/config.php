@@ -107,6 +107,23 @@ return [
                 'ADD CONSTRAINT fk_urp_r FOREIGN KEY(role_id) REFERENCES roles(id)',
             ],
         ],
+        'api_key_role' => [
+            'table_name' => 'api_key_role',
+            'columns' => [
+                'id' => 'id',
+                'api_key_id' => 'api_key_id',
+                'role_id' => 'role_id',
+            ],
+            'types' => [
+                'id' => 'INT(11) UNSIGNED NOT NULL PRIMARY KEY AUTO_INCREMENT',
+                'api_key_id' => 'INT(11) UNSIGNED NOT NULL',
+                'role_id' => 'INT(11) UNSIGNED NOT NULL',
+            ],
+            'constraints' => [
+                'ADD CONSTRAINT fk_akr_u FOREIGN KEY(api_key_id) REFERENCES api_keys(id)',
+                'ADD CONSTRAINT fk_akr_r FOREIGN KEY(role_id) REFERENCES roles(id)',
+            ],
+        ],
         'role_res_perm' => [
             'table_name' => 'role_res_perm',
             'columns' => [
