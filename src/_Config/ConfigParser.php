@@ -222,6 +222,33 @@ class ConfigParser
     }
 
     /**
+     * Return value will be as following format:
+     * [
+     *   'username' => provided username column by user,
+     *   'api_key' => provided api key column by user,
+     * ]
+     *
+     * @return array
+     * @throws ConfigException
+     */
+    public function getAPICredentialColumns(): array
+    {
+        $usersColumns = $this->getTablesColumn($this->tables['api_keys']);
+
+        if (!isset($usersColumns['username'], $usersColumns['api_key']) ||
+            empty($usersColumns['username']) ||
+            empty($usersColumns['api_key'])
+        ) {
+            throw new ConfigException('API users table should have [username] and [api_key] columns\' key');
+        }
+
+        return [
+            'username' => $usersColumns['username'],
+            'api_key' => $usersColumns['api_key'],
+        ];
+    }
+
+    /**
      * Parse config file
      */
     protected function parse(): void
