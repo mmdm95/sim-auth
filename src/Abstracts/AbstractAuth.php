@@ -663,6 +663,7 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
             }
 
             // for checking access in roles of user
+            $roleColumns = $this->config_parser->getTablesColumn($this->roles_key);
             $userRoleColumns = $this->config_parser->getTablesColumn($this->user_role_key);
             $userRoles = $this->db->getFrom(
                 $this->tables[$this->user_role_key],
@@ -674,7 +675,7 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
             if (!count($userRoles)) return false;
 
             foreach ($userRoles as $key => $role) {
-                if ($this->isAllowRole_($resource_id, $permission_id, $role['id'])) {
+                if ($this->isAllowRole_($resource_id, $permission_id, $role[$roleColumns['id']])) {
                     return true;
                 }
             }
