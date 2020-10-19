@@ -3,15 +3,15 @@
 namespace Sim\Auth;
 
 use PDO;
-use Sim\Auth\Abstracts\AbstractBaseAuth;
+use Sim\Auth\Abstracts\AbstractAPIAuth;
 use Sim\Auth\Exceptions\IncorrectAPIKeyException;
 use Sim\Auth\Exceptions\InvalidUserException;
 use Sim\Auth\Interfaces\IAuthValidator;
 use Sim\Auth\Interfaces\IAuthVerifier;
 use Sim\Auth\Interfaces\IDBException;
-use Sim\Auth\Verifiers\Verifier;
+use Sim\Auth\Verifiers\SimpleVerifier;
 
-class APIAuth extends AbstractBaseAuth implements IAuthValidator
+class APIAuth extends AbstractAPIAuth implements IAuthValidator
 {
     /**
      * @var IAuthVerifier
@@ -21,19 +21,17 @@ class APIAuth extends AbstractBaseAuth implements IAuthValidator
     /**
      * APIAuth constructor.
      * @param PDO $pdo_instance
-     * @param int $algo
      * @param array|null $config
      * @throws IDBException
      */
     public function __construct(
         PDO $pdo_instance,
-        $algo = PASSWORD_BCRYPT,
         ?array $config = null
     )
     {
         parent::__construct($pdo_instance, $config);
 
-        $this->verifier = new Verifier($algo);
+        $this->verifier = new SimpleVerifier();
     }
 
     /**
@@ -54,7 +52,7 @@ class APIAuth extends AbstractBaseAuth implements IAuthValidator
         array $bind_values = []
     ): bool
     {
-        if(!isset($credentials['username'], $credentials['api_key']) || empty($credentials['username']) || empty($credentials['api_key'])) {
+        if (!isset($credentials['username'], $credentials['api_key']) || empty($credentials['username']) || empty($credentials['api_key'])) {
             throw new \InvalidArgumentException('Provided credentials does not have correct structure.');
         }
 
