@@ -99,4 +99,57 @@ class APIAuth extends AbstractAPIAuth implements IAuthValidator
 
         return true;
     }
+
+    /**
+     * @param string $api_key
+     * @param string|null $extra_query
+     * @param array $bind_values
+     * @return bool
+     * @throws IDBException
+     * @throws IncorrectAPIKeyException
+     */
+    public function validateAPI(
+        string $api_key,
+        string $extra_query = null,
+        array $bind_values = []
+    ): bool
+    {
+        if (!isset($api_key) || empty($api_key)) {
+            throw new \InvalidArgumentException('API key is not valid!');
+        }
+
+        $apiColumns = $this->config_parser->getTablesColumn($this->api_keys_key);
+        $apiKeyRoleColumns = $this->config_parser->getTablesColumn($this->api_key_role_key);
+
+        $where = "{$apiColumns['api_key']}=:__api_auth_api_key_value__";
+        if (!empty($extra_query)) {
+            $where .= " AND ({$extra_query})";
+            $bind_values = array_merge($bind_values, [
+                '__api_auth_api_key_value__' => $api_key,
+            ]);
+        } else {
+            $bind_values = [
+                '__api_auth_api_key_value__' => $api_key,
+            ];
+        }
+
+        // get user from database
+        $user = $this->db->getFromJoin(
+            'INNER',
+            $this->tables[$this->api_keys_key],
+            $this->tables[$this->api_key_role_key],
+            "{$this->db->quoteName($this->tables[$this->api_keys_key])}.{$this->db->quoteName($apiColumns['id'])}" .
+            "=" .
+            "{$this->db->quoteName($this->tables[$this->api_key_role_key])}.{$this->db->quoteName($apiKeyRoleColumns['api_key_id'])}",
+            $where,
+            $apiColumns['api_key'],
+            $bind_values
+        );
+
+        if (count($user) !== 1) {
+            throw new IncorrectAPIKeyException('Api key is not valid!');
+        }
+
+        return true;
+    }
 }
