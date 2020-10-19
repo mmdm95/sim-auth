@@ -66,7 +66,7 @@ try {
 //        $dbAuth->logout();
 
         // destroy uuid - passed
-//        $dbAuth->destroySession('d95d2a65-2221-4e92-862a-8e1cf64ab0f6');
+//        $dbAuth->destroySession('session uuid');
 
         echo PHP_EOL;
         var_dump('logged in? ', $dbAuth->isLoggedIn());
@@ -86,6 +86,9 @@ try {
     $apiAuth = new \Sim\Auth\APIAuth($pdo);
 
     try {
+        // add role tested - passed
+//        $apiAuth->addRoleToUser(['the role name'], 'the username');
+
 //        $apiAuth->validate([
 //            'username' => 'the username',
 //            'api_key' => 'the api key',
