@@ -242,6 +242,121 @@ parse the configuration of library.
 there is no need to call this method, but please before any 
 table creation, call this method to make your tables.
 
+#### `addResources(array $resources)`
+
+Add some resources to database.
+
+$resources array has following structure:
+
+```php
+// an array of arrays 
+[
+  // this array is columns of resource table and their values
+  [
+    column1 => value1,
+    column2 => value2,
+  ],
+  [
+    column1 => value3,
+    column2 => value4,
+  ],
+  ...
+]
+```
+
+#### `removeResources(array $resources)`
+
+Remove some resources from database.
+
+**Note:** $resources should be array of resources' name 
+or resources' id.
+
+#### `hasResource($resource): bool`
+
+Check if a resource is exists or not.
+
+**Note:** $resources should be array of resources' name 
+or resources' id.
+
+#### `getResources(): array`
+
+Get all resources.
+
+**Note:** It returns all columns of resources table.
+
+#### `getResourcesNames(): array`
+
+Get all resources `name` column.
+
+#### `addRoles(array $roles)`
+
+Add some roles to database.
+
+$roles array has following structure:
+
+```php
+[
+  // this array is columns of role table and their values
+  [
+    column1 => value1,
+    column2 => value2,
+  ],
+  [
+    column1 => value3,
+    column2 => value4,
+  ],
+  ...
+]
+```
+
+#### `removeRoles(array $roles)`
+
+Remove some roles from database.
+
+**Note:** $roles should be array of roles' name or roles' id.
+
+#### `hasRole(string $role): bool`
+
+Check if a role is exists or not. You must pass the role name as 
+parameter. It is because of convenient to use constants as roles' 
+names.
+
+#### `getRoles(): array`
+
+Get all roles.
+
+**Note:** It returns all columns of roles table.
+
+#### `getAdminRoles(): array`
+
+Get all admin roles.
+
+**Note:** It returns all columns of roles table.
+
+#### `getRolesName(): array`
+
+Get all roles `name` column.
+
+#### `getAdminRolesName(): array`
+
+Get all admin's roles `name` column.
+
+#### `allowRole($resource, array $permission, $role)`
+
+Make a role to allow a resource with a specific permission.
+
+**Note:** You can pass resource's `name` or `id`.
+
+**Note:** You can pass role's `name` or `id`.
+
+#### `disallowRole($resource, array $permission, $role)`
+
+Make a role to disallow a resource with a specific permission.
+
+**Note:** You can pass resource's `name` or `id`.
+
+**Note:** You can pass role's `name` or `id`.
+
 #### AbstractAuth
 
 Some connections (that will say in each connection) have 
@@ -466,121 +581,6 @@ Make a user to disallow a resource with a specific permission.
 **Note:** You can pass user's `username` or `id` to check or pass 
 `null` or nothing to check for current user.
 
-#### `allowRole($resource, array $permission, $role)`
-
-Make a role to allow a resource with a specific permission.
-
-**Note:** You can pass resource's `name` or `id`.
-
-**Note:** You can pass role's `name` or `id`.
-
-#### `disallowRole($resource, array $permission, $role)`
-
-Make a role to disallow a resource with a specific permission.
-
-**Note:** You can pass resource's `name` or `id`.
-
-**Note:** You can pass role's `name` or `id`.
-
-#### `addResources(array $resources)`
-
-Add some resources to database.
-
-$resources array has following structure:
-
-```php
-// an array of arrays 
-[
-  // this array is columns of resource table and their values
-  [
-    column1 => value1,
-    column2 => value2,
-  ],
-  [
-    column1 => value3,
-    column2 => value4,
-  ],
-  ...
-]
-```
-
-#### `removeResources(array $resources)`
-
-Remove some resources from database.
-
-**Note:** $resources should be array of resources' name 
-or resources' id.
-
-#### `hasResource($resource): bool`
-
-Check if a resource is exists or not.
-
-**Note:** $resources should be array of resources' name 
-or resources' id.
-
-#### `getResources(): array`
-
-Get all resources.
-
-**Note:** It returns all columns of resources table.
-
-#### `getResourcesNames(): array`
-
-Get all resources `name` column.
-
-#### `addRoles(array $roles)`
-
-Add some roles to database.
-
-$roles array has following structure:
-
-```php
-[
-  // this array is columns of role table and their values
-  [
-    column1 => value1,
-    column2 => value2,
-  ],
-  [
-    column1 => value3,
-    column2 => value4,
-  ],
-  ...
-]
-```
-
-#### `removeRoles(array $roles)`
-
-Remove some roles from database.
-
-**Note:** $roles should be array of roles' name or roles' id.
-
-#### `hasRole(string $role): bool`
-
-Check if a role is exists or not. You must pass the role name as 
-parameter. It is because of convenient to use constants as roles' 
-names.
-
-#### `getRoles(): array`
-
-Get all roles.
-
-**Note:** It returns all columns of roles table.
-
-#### `getAdminRoles(): array`
-
-Get all admin roles.
-
-**Note:** It returns all columns of roles table.
-
-#### `getRolesName(): array`
-
-Get all roles `name` column.
-
-#### `getAdminRolesName(): array`
-
-Get all admin's roles `name` column.
-
 #### `getUserRole($username): array`
 
 Get a user's roles.
@@ -704,9 +704,72 @@ try {
 }
 ```
 
+#### AbstractAPIAuth
+
+Contains all of [AbstractBaseAuth][8].
+
+```php
+__construct(
+    PDO $pdo_instance,
+    ?array $config = null
+);
+```
+
+`$pdo_instance`: See constructor of [AbstractBaseAuth][8].
+
+`$config`: See constructor of [AbstractBaseAuth][8].
+
+#### `isAllow($resource, int $permission, $username = null): bool`
+
+Check if a user is allow to have a permission to a specific resource 
+or not.
+
+**Note:** You can pass resource's `name` or `id`.
+
+**Note:** You can pass user's `username` or `id` to check or pass 
+`null` or nothing to check for current user.
+
+Permissions are one of below:
+
+- IAuth::PERMISSION_CREATE
+
+- IAuth::PERMISSION_READ
+
+- IAuth::PERMISSION_UPDATE
+
+- IAuth::PERMISSION_DELETE
+
+(They are available under `Sim\Auth\Interfaces` namespace)
+
+#### `getUserRole($username): array`
+
+Get a user's roles.
+
+**Note:** You can pass user's `username` or `id`.
+
+#### `getCurrentUserRole(): array`
+
+Get current user's roles.
+
+#### `addRoleToUser(array $roles, $username = null)`
+
+Add some roles to a user.
+
+**Note:** You should pass an array of roles' name.
+
+**Note:** You can pass user's `username` or `id` to add role to 
+or pass `null` or nothing to add roles to current user.
+
+#### `isAdmin($username = null): bool`
+
+Check if a user is admin or not.
+
+**Note:** You can pass user's `username` or `id` to check or pass 
+`null` or nothing to check for current user.
+
 #### `APIAuth`
 
-Contains all of [AbstractBaseAuth][8] and below extra information.
+Contains all of [AbstractAPIAuth][9] and below extra information.
 
 #### `validate(array $credentials, string $extra_query = null, array $bind_values = []): bool`
                                                                   
@@ -790,3 +853,4 @@ Under MIT license.
 [5]: https://github.com/mmdm95/sim-cookie
 [6]: https://github.com/mmdm95/sim-session
 [7]: https://github.com/jenssegers/agent
+[9]: #abstractapiauth
