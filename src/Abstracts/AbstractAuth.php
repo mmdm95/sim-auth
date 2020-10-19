@@ -9,8 +9,6 @@ use Sim\Auth\Interfaces\IAuth;
 use Sim\Auth\Interfaces\IAuthenticator;
 use Sim\Auth\Interfaces\IAuthorizer;
 use Sim\Auth\Interfaces\IDBException;
-use Sim\Auth\Interfaces\IResource;
-use Sim\Auth\Interfaces\IRole;
 use Sim\Auth\Interfaces\IStorage;
 use Sim\Auth\Storage\CookieStorage;
 use Sim\Auth\Storage\DBStorage;
@@ -20,9 +18,7 @@ use Sim\Crypt\Exceptions\CryptException;
 
 abstract class AbstractAuth extends AbstractBaseAuth implements
     IAuthenticator,
-    IAuthorizer,
-    IResource,
-    IRole
+    IAuthorizer
 {
     /**
      * @var array
@@ -71,22 +67,7 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
     /**
      * @var string
      */
-    protected $roles_key = 'roles';
-
-    /**
-     * @var string
-     */
-    protected $resources_key = 'resources';
-
-    /**
-     * @var string
-     */
     protected $user_role_key = 'user_role';
-
-    /**
-     * @var string
-     */
-    protected $role_res_perm_key = 'role_res_perm';
 
     /**
      * @var string
@@ -507,295 +488,6 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
      * {@inheritdoc}
      * @throws IDBException
      */
-    public function allowRole($resource, array $permission, $role)
-    {
-        // get resource id
-        $resourceId = $this->getResourceID_($resource);
-        if (is_null($resourceId)) return $this;
-
-        // get role id
-        $roleId = $this->getRoleID_($role);
-        if (is_null($roleId)) return $this;
-
-        $roleResPermColumns = $this->config_parser->getTablesColumn($this->role_res_perm_key);
-        foreach ($permission as $perm) {
-            if (!$this->isValidPermission($perm)) continue;
-
-            $this->db->updateIfExistsOrInsert(
-                $this->tables[$this->role_res_perm_key],
-                [
-                    $roleResPermColumns['role_id'] => $roleId,
-                    $roleResPermColumns['resource_id'] => $resourceId,
-                    $roleResPermColumns['perm_id'] => $perm,
-                ],
-                "{$this->db->quoteName($roleResPermColumns['role_id'])}=:r_id " .
-                "AND {$this->db->quoteName($roleResPermColumns['resource_id'])}=:rec_id " .
-                "AND {$this->db->quoteName($roleResPermColumns['perm_id'])}=:perm_id",
-                [
-                    'r_id' => $roleId,
-                    'rec_id' => $resourceId,
-                    'perm_id' => $perm,
-                ]);
-        }
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws IDBException
-     */
-    public function disallowRole($resource, array $permission, $role)
-    {
-        // get resource id
-        $resourceId = $this->getResourceID_($resource);
-        if (is_null($resourceId)) return $this;
-
-        // get role id
-        $roleId = $this->getRoleID_($role);
-        if (is_null($roleId)) return $this;
-
-        $roleResPermColumns = $this->config_parser->getTablesColumn($this->role_res_perm_key);
-        foreach ($permission as $perm) {
-            if (!$this->isValidPermission($perm)) continue;
-
-            $this->db->delete(
-                $this->tables[$this->role_res_perm_key],
-                "{$this->db->quoteName($roleResPermColumns['role_id'])}=:r_id " .
-                "AND {$this->db->quoteName($roleResPermColumns['resource_id'])}=:rec_id " .
-                "AND {$this->db->quoteName($roleResPermColumns['perm_id'])}=:perm_id",
-                [
-                    'r_id' => $roleId,
-                    'rec_id' => $resourceId,
-                    'perm_id' => $perm,
-                ]);
-        }
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws IDBException
-     */
-    public function addResources(array $resources)
-    {
-        try {
-            foreach ($resources as $resourceArr) {
-                if (is_array($resourceArr)) {
-                    $addArr = [];
-
-                    foreach ($resourceArr as $column => $value) {
-                        $addArr[$column] = $value;
-                    }
-
-                    if (!empty($addArr)) {
-                        $this->db->insert($this->tables[$this->resources_key], $addArr);
-                    }
-                }
-            }
-        } catch (\Exception $e) {
-            // do nothing for now
-        }
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws IDBException
-     */
-    public function removeResources(array $resources)
-    {
-        $resourceColumns = $this->config_parser->getTablesColumn($this->resources_key);
-        foreach ($resources as $resource) {
-            // get resource id
-            $resourceId = $this->getResourceID_($resource);
-            if (is_null($resourceId)) continue;
-
-            $this->db->delete(
-                $this->tables[$this->resources_key],
-                "{$this->db->quoteName($resourceColumns['id'])}=:rec_id",
-                [
-                    'rec_id' => $resourceId,
-                ]
-            );
-        }
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws IDBException
-     */
-    public function hasResource($resource): bool
-    {
-        // get resource id
-        $resourceId = $this->getResourceID_($resource);
-        if (is_null($resourceId)) return false;
-
-        $resourceColumns = $this->config_parser->getTablesColumn($this->resources_key);
-        $count = $this->db->count(
-            $this->tables[$this->resources_key],
-            "{$this->db->quoteName($resourceColumns['id'])}=:rec_id",
-            [
-                'rec_id' => $resourceId,
-            ]
-        );
-
-        return $count > 0;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws IDBException
-     */
-    public function getResources(): array
-    {
-        return $this->getFromResources();
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws IDBException
-     */
-    public function getResourcesNames(): array
-    {
-        $resourceColumns = $this->config_parser->getTablesColumn($this->resources_key);
-        return $this->getFromResources($resourceColumns['name']);
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws IDBException
-     */
-    public function addRoles(array $roles)
-    {
-        try {
-            foreach ($roles as $roleArr) {
-                if (is_array($roleArr)) {
-                    $addArr = [];
-
-                    foreach ($roleArr as $column => $value) {
-                        $addArr[$column] = $value;
-                    }
-
-                    if (!empty($addArr)) {
-                        $this->db->insert($this->tables[$this->roles_key], $addArr);
-                    }
-                }
-            }
-        } catch (\Exception $e) {
-            // do nothing for now
-        }
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws IDBException
-     */
-    public function removeRoles(array $roles)
-    {
-        $roleColumns = $this->config_parser->getTablesColumn($this->roles_key);
-        foreach ($roles as $role) {
-            // get resource id
-            $roleId = $this->getRoleID_($role);
-            if (is_null($roleId)) continue;
-
-            $this->db->delete(
-                $this->tables[$this->roles_key],
-                "{$this->db->quoteName($roleColumns['id'])}=:r_id",
-                [
-                    'r_id' => $roleId,
-                ]
-            );
-        }
-
-        return $this;
-    }
-
-    /**
-     * {@inheritdoc}
-     *
-     * @throws IDBException
-     */
-    public function hasRole(string $role): bool
-    {
-        // get role id
-        $roleId = $this->getRoleID_($role);
-        if (is_null($roleId)) return false;
-
-        $roleColumns = $this->config_parser->getTablesColumn($this->roles_key);
-        $count = $this->db->count(
-            $this->tables[$this->roles_key],
-            "{$this->db->quoteName($roleColumns['id'])}=:r_id",
-            [
-                'r_id' => $roleId,
-            ]
-        );
-
-        return $count > 0;
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws IDBException
-     */
-    public function getRoles(): array
-    {
-        return $this->getFromRoles();
-
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws IDBException
-     */
-    public function getAdminRoles(): array
-    {
-        $roleColumns = $this->config_parser->getTablesColumn($this->roles_key);
-        return $this->getFromRoles(
-            '*',
-            "{$this->db->quoteName($roleColumns['is_admin'])}=:is_admin",
-            [
-                'is_admin' => 1,
-            ]
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws IDBException
-     */
-    public function getRolesName(): array
-    {
-        $roleColumns = $this->config_parser->getTablesColumn($this->roles_key);
-        return $this->getFromRoles($roleColumns['name']);
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws IDBException
-     */
-    public function getAdminRolesName(): array
-    {
-        $roleColumns = $this->config_parser->getTablesColumn($this->roles_key);
-        return $this->getFromRoles(
-            $roleColumns['name'],
-            "{$this->db->quoteName($roleColumns['is_admin'])}=:is_admin",
-            [
-                'is_admin' => 1,
-            ]
-        );
-    }
-
-    /**
-     * {@inheritdoc}
-     * @throws IDBException
-     */
     public function getUserRole($username): array
     {
         // get user id
@@ -830,14 +522,14 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
      * {@inheritdoc}
      * @throws IDBException
      */
-    public function addRoleToUser(array $role, $username = null)
+    public function addRoleToUser(array $roles, $username = null)
     {
         // get user id
         $userId = $this->getUserID_($username);
         if (is_null($userId)) return $this;
 
         $userRoleColumns = $this->config_parser->getTablesColumn($this->user_role_key);
-        foreach ($role as $r) {
+        foreach ($roles as $r) {
             // get role id
             $roleId = $this->getRoleID_($r);
             if (is_null($roleId)) continue;
@@ -891,7 +583,7 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
             ]
         );
 
-        return (bool)count($userAdminRoles);
+        return count($userAdminRoles) > 0;
     }
 
     /**
@@ -994,44 +686,6 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
     }
 
     /**
-     * @param int $resource_id
-     * @param int $permission_id
-     * @param int $role_id
-     * @return bool
-     * @throws IDBException
-     */
-    private function isAllowRole_(int $resource_id, int $permission_id, int $role_id): bool
-    {
-        $roleResPermColumns = $this->config_parser->getTablesColumn($this->role_res_perm_key);
-        $allowRole = $this->db->count(
-            $this->tables[$this->roles_key],
-            "{$this->db->quoteName($roleResPermColumns['role_id'])}=:r_id " .
-            "AND {$this->db->quoteName($roleResPermColumns['resource_id'])}=:res_id " .
-            "AND {$this->db->quoteName($roleResPermColumns['perm_id'])}=:perm_id " .
-            [
-                'r_id' => $role_id,
-                'res_id' => $resource_id,
-                'perm_id' => $permission_id,
-            ]);
-
-        // if there is access for role
-        if ($allowRole > 0) {
-            return true;
-        }
-
-        return false;
-    }
-
-    /**
-     * @param int $permission
-     * @return bool
-     */
-    private function isValidPermission(int $permission): bool
-    {
-        return in_array($permission, IAuth::PERMISSIONS);
-    }
-
-    /**
      * @param int $storage_type
      * @return bool
      */
@@ -1067,58 +721,6 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
     }
 
     /**
-     * @param $resource
-     * @return int|null
-     * @throws IDBException
-     */
-    private function getResourceID_($resource): ?int
-    {
-        $resourceId = null;
-        if (is_int($resource)) {
-            $resourceId = $resource;
-        } else {
-            $resourceColumns = $this->config_parser->getTablesColumn($this->resources_key);
-            $rec = $this->getFromResources(
-                $resourceColumns['id'],
-                "{$resourceColumns['name']}=:r",
-                ['r' => $resource]);
-
-            if (count($rec)) {
-                $resourceId = $rec[0][$resourceColumns['id']];
-            }
-        }
-
-        return $resourceId;
-    }
-
-    /**
-     * @param $role
-     * @return int|null
-     * @throws IDBException
-     */
-    private function getRoleID_($role): ?int
-    {
-        $roleId = null;
-        if (is_int($role)) {
-            $roleId = $role;
-        } else {
-            $roleColumns = $this->config_parser->getTablesColumn($this->roles_key);
-            $role = $this->getFromRoles(
-                $roleColumns['id'],
-                "{$roleColumns['name']}=:r",
-                ['r' => $role]);
-
-            if (count($role)) {
-                $roleId = $role[0][$roleColumns['id']];
-            } else {
-                return null;
-            }
-        }
-
-        return $roleId;
-    }
-
-    /**
      * @param array|string $columns
      * @param string|null $where
      * @param array $bind_values
@@ -1129,38 +731,6 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
     {
         return $this->db->getFrom(
             $this->tables[$this->users_key],
-            $where,
-            $columns,
-            $bind_values);
-    }
-
-    /**
-     * @param array|string $columns
-     * @param string|null $where
-     * @param array $bind_values
-     * @return array
-     * @throws IDBException
-     */
-    private function getFromResources($columns = '*', $where = null, $bind_values = []): array
-    {
-        return $this->db->getFrom(
-            $this->tables[$this->resources_key],
-            $where,
-            $columns,
-            $bind_values);
-    }
-
-    /**
-     * @param array|string $columns
-     * @param string|null $where
-     * @param array $bind_values
-     * @return array
-     * @throws IDBException
-     */
-    private function getFromRoles($columns = '*', $where = null, $bind_values = []): array
-    {
-        return $this->db->getFrom(
-            $this->tables[$this->roles_key],
             $where,
             $columns,
             $bind_values);
