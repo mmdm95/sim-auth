@@ -4,7 +4,10 @@
     <list default="true" id="ce3044a1-97f5-4fdd-8f18-0a1c41ccd6f9" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/README.md" beforeDir="false" afterPath="$PROJECT_DIR$/README.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Tests/general.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tests/general.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/APIAuth.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/APIAuth.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Helpers/APIAuth.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Helpers/APIAuthHelper.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Helpers/BasicAuth.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Helpers/BasicAuthHelper.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Tests/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tests/index.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -20,8 +23,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/APIAuth.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="483">
-              <caret line="30" column="5" lean-forward="true" selection-start-line="30" selection-start-column="5" selection-end-line="30" selection-end-column="5" />
+            <state relative-caret-position="183">
+              <caret line="85" lean-forward="true" selection-start-line="85" selection-end-line="85" />
               <folding>
                 <element signature="e#28#36#0#PHP" expanded="true" />
               </folding>
@@ -30,10 +33,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Tests/general.php">
+        <entry file="file://$PROJECT_DIR$/src/Tests/index.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="321">
-              <caret line="89" column="69" selection-start-line="89" selection-start-column="69" selection-end-line="89" selection-end-column="69" />
+            <state relative-caret-position="229">
+              <caret line="123" column="25" lean-forward="true" selection-start-line="123" selection-start-column="25" selection-end-line="123" selection-end-column="25" />
             </state>
           </provider>
         </entry>
@@ -42,19 +45,10 @@
         <entry file="file://$PROJECT_DIR$/README.md">
           <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
             <state split_layout="SPLIT">
-              <first_editor relative-caret-position="479">
-                <caret line="767" column="44" selection-start-line="767" selection-start-column="44" selection-end-line="767" selection-end-column="44" />
+              <first_editor relative-caret-position="135">
+                <caret line="805" column="41" selection-start-line="805" selection-start-column="41" selection-end-line="805" selection-end-column="41" />
               </first_editor>
               <second_editor />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/Abstracts/AbstractAPIAuth.php">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="253">
-              <caret line="110" column="51" lean-forward="true" selection-start-line="110" selection-start-column="20" selection-end-line="110" selection-end-column="51" />
             </state>
           </provider>
         </entry>
@@ -134,7 +128,6 @@
         <option value="$PROJECT_DIR$/src/Storage/DBStorage.php" />
         <option value="$PROJECT_DIR$/src/Helpers/APIAuth.php" />
         <option value="$PROJECT_DIR$/src/Utils/APIUtil.php" />
-        <option value="$PROJECT_DIR$/src/Tests/index.php" />
         <option value="$PROJECT_DIR$/src/Interfaces/IValidator.php" />
         <option value="$PROJECT_DIR$/src/Exceptions/IncorrectAPIKeyException.php" />
         <option value="$PROJECT_DIR$/src/DBAuth.php" />
@@ -144,13 +137,14 @@
         <option value="$PROJECT_DIR$/src/Interfaces/IAPIAuthenticator.php" />
         <option value="$PROJECT_DIR$/src/Interfaces/IAPIAuthorizer.php" />
         <option value="$PROJECT_DIR$/src/Interfaces/IAuthorizer.php" />
-        <option value="$PROJECT_DIR$/src/Tests/general.php" />
         <option value="$PROJECT_DIR$/src/Verifiers/SimpleVerifier.php" />
-        <option value="$PROJECT_DIR$/src/APIAuth.php" />
         <option value="$PROJECT_DIR$/src/_Config/ConfigParser.php" />
         <option value="$PROJECT_DIR$/src/Abstracts/AbstractBaseAuth.php" />
         <option value="$PROJECT_DIR$/src/Abstracts/AbstractAuth.php" />
         <option value="$PROJECT_DIR$/src/Abstracts/AbstractAPIAuth.php" />
+        <option value="$PROJECT_DIR$/src/Tests/general.php" />
+        <option value="$PROJECT_DIR$/src/APIAuth.php" />
+        <option value="$PROJECT_DIR$/src/Tests/index.php" />
         <option value="$PROJECT_DIR$/README.md" />
       </list>
     </option>
@@ -194,13 +188,7 @@
               <item name="sim-auth" type="b2602c69:ProjectViewProjectNode" />
               <item name="sim-auth" type="462c0819:PsiDirectoryNode" />
               <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="Abstracts" type="462c0819:PsiDirectoryNode" />
-            </path>
-            <path>
-              <item name="sim-auth" type="b2602c69:ProjectViewProjectNode" />
-              <item name="sim-auth" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
-              <item name="Interfaces" type="462c0819:PsiDirectoryNode" />
+              <item name="Helpers" type="462c0819:PsiDirectoryNode" />
             </path>
             <path>
               <item name="sim-auth" type="b2602c69:ProjectViewProjectNode" />
@@ -265,12 +253,12 @@
       <workItem from="1602858822153" duration="10466000" />
       <workItem from="1602889320112" duration="3475000" />
       <workItem from="1602894587907" duration="51000" />
-      <workItem from="1602977867259" duration="42875000" />
+      <workItem from="1602977867259" duration="50572000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="300243000" />
+    <option name="totallyTimeSpent" value="307940000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -286,7 +274,7 @@
     <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.18443997" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.18443997" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Docker" order="0" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="1" />
@@ -421,13 +409,6 @@
     <entry file="file://$PROJECT_DIR$/src/Tests/api.php">
       <provider selected="true" editor-type-id="text-editor" />
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Helpers/BasicAuth.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="421">
-          <caret line="36" column="40" selection-start-line="36" selection-start-column="40" selection-end-line="36" selection-end-column="40" />
-        </state>
-      </provider>
-    </entry>
     <entry file="jar://$APPLICATION_HOME_DIR$/plugins/php/lib/php.jar!/stubs/standard/standard_0.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="99">
@@ -459,7 +440,7 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Helpers/APIAuth.php">
+    <entry file="file://$PROJECT_DIR$/src/Helpers/APIAuthHelper.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="322">
           <caret line="14" column="38" selection-start-line="14" selection-start-column="38" selection-end-line="14" selection-end-column="38" />
@@ -514,13 +495,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="230">
           <caret line="10" column="19" lean-forward="true" selection-start-line="10" selection-start-column="19" selection-end-line="10" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/src/Tests/index.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="299">
-          <caret line="85" column="23" lean-forward="true" selection-start-line="85" selection-start-column="23" selection-end-line="85" selection-end-column="23" />
         </state>
       </provider>
     </entry>
@@ -634,16 +608,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/APIAuth.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="483">
-          <caret line="30" column="5" lean-forward="true" selection-start-line="30" selection-start-column="5" selection-end-line="30" selection-end-column="5" />
-          <folding>
-            <element signature="e#28#36#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Abstracts/AbstractAuth.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="299">
@@ -666,23 +630,47 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Abstracts/AbstractAPIAuth.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="253">
-          <caret line="110" column="51" lean-forward="true" selection-start-line="110" selection-start-column="20" selection-end-line="110" selection-end-column="51" />
+        <state relative-caret-position="184">
+          <caret line="107" column="20" lean-forward="true" selection-start-line="107" selection-start-column="20" selection-end-line="107" selection-end-column="20" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Tests/general.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="321">
-          <caret line="89" column="69" selection-start-line="89" selection-start-column="69" selection-end-line="89" selection-end-column="69" />
+        <state relative-caret-position="68">
+          <caret line="81" column="5" lean-forward="true" selection-start-line="81" selection-start-column="5" selection-end-line="81" selection-end-column="5" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Helpers/BasicAuthHelper.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="23">
+          <caret line="4" column="6" selection-start-line="4" selection-start-column="6" selection-end-line="4" selection-end-column="6" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/APIAuth.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="183">
+          <caret line="85" lean-forward="true" selection-start-line="85" selection-end-line="85" />
+          <folding>
+            <element signature="e#28#36#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Tests/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="229">
+          <caret line="123" column="25" lean-forward="true" selection-start-line="123" selection-start-column="25" selection-end-line="123" selection-end-column="25" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
-          <first_editor relative-caret-position="479">
-            <caret line="767" column="44" selection-start-line="767" selection-start-column="44" selection-end-line="767" selection-end-column="44" />
+          <first_editor relative-caret-position="135">
+            <caret line="805" column="41" selection-start-line="805" selection-start-column="41" selection-end-line="805" selection-end-column="41" />
           </first_editor>
           <second_editor />
         </state>
