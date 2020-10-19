@@ -10,6 +10,29 @@ abstract class AbstractAPIAuth extends AbstractBaseAuth
      * {@inheritdoc}
      * @throws IDBException
      */
+    public function isAllow($resource, int $permission, $username = null): bool
+    {
+        try {
+            if (!$this->isValidPermission($permission)) return false;
+
+            // get user id
+            $userId = $this->getUserID_($username);
+            if (is_null($userId)) return false;
+
+            // get resource id
+            $resourceId = $this->getResourceID_($resource);
+            if (is_null($resourceId)) return false;
+
+            return $this->isAllow_($resourceId, $permission, $userId);
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
+     * {@inheritdoc}
+     * @throws IDBException
+     */
     public function getUserRole($username): array
     {
         // get user id
@@ -110,12 +133,48 @@ abstract class AbstractAPIAuth extends AbstractBaseAuth
     }
 
     /**
+     * @param int $resource_id
+     * @param int $permission_id
+     * @param int $user_id
+     * @return bool
+     * @throws IDBException
+     */
+    private function isAllow_(int $resource_id, int $permission_id, int $user_id): bool
+    {
+        try {
+            // for checking access in roles of user
+            $roleColumns = $this->config_parser->getTablesColumn($this->roles_key);
+            $apiKeyRoleColumns = $this->config_parser->getTablesColumn($this->api_key_role_key);
+            $userRoles = $this->db->getFrom(
+                $this->tables[$this->api_key_role_key],
+                "{$this->db->quoteName($apiKeyRoleColumns['api_key_id'])}=:u",
+                $apiKeyRoleColumns['id'],
+                ['u' => $user_id]);
+
+            // if user have role
+            if (!count($userRoles)) return false;
+
+            foreach ($userRoles as $key => $role) {
+                if ($this->isAllowRole_($resource_id, $permission_id, $role[$roleColumns['id']])) {
+                    return true;
+                }
+            }
+
+            return false;
+        } catch (\Exception $e) {
+            return false;
+        }
+    }
+
+    /**
      * @param null $username
      * @return int|null
      * @throws IDBException
      */
     private function getUserID_($username = null): ?int
     {
+        if (is_null($username)) return null;
+
         $userId = null;
         if (is_int($username)) {
             $userId = $username;
