@@ -20,7 +20,7 @@ header("Access-Control-Max-Age: 3600");
 header("Access-Control-Allow-Headers: Content-Type, Access-Control-Allow-Headers, Authorization, X-Requested-With");
 
 $uri = parse_url($_SERVER['REQUEST_URI'], PHP_URL_PATH);
-$uri = explode( '/', $uri );
+$uri = explode('/', $uri);
 
 // all of our endpoints start with /person
 // everything else results in a 404 Not Found
@@ -46,60 +46,94 @@ try {
 }
 
 try {
-    $mainCryptKey = 'ZjZvO0toUytAMTpbcXo4Q2Ezc0E5JDUtVVJkdGNqMlc0bTA3aS4=';
-    $assuredCryptKey = 'dFxFMyw0OklBdjlrITI/LTgrZ3JuZTZfWjUvJnBSVy4wTyQpMTdxc04lfkhdUUB4';
-    $cryptKeys = [
-        'main' => $mainCryptKey,
-        'assured' => $assuredCryptKey,
-    ];
+//    $mainCryptKey = 'ZjZvO0toUytAMTpbcXo4Q2Ezc0E5JDUtVVJkdGNqMlc0bTA3aS4=';
+//    $assuredCryptKey = 'dFxFMyw0OklBdjlrITI/LTgrZ3JuZTZfWjUvJnBSVy4wTyQpMTdxc04lfkhdUUB4';
+//    $cryptKeys = [
+//        'main' => $mainCryptKey,
+//        'assured' => $assuredCryptKey,
+//    ];
+//
+//    $dbAuth = new DBAuth($pdo, 'default', $cryptKeys);
+////    $admin = new DBAuth($pdo, 'admin');
+//
+//    try {
+//        // add up tables from config
+////        $dbAuth->runConfig();
+//
+//        // add role tested - passed
+////        $dbAuth->addRoleToUser(['the role name'], 'the username');
+//
+//        // test suspend time setting - passed
+////        $dbAuth->setSuspendTime(60);
+//
+//        // login testing - passed
+////        $dbAuth->login([
+////            'username' => 'the username',
+////            'password' => 'the password',
+////        ]);
+//
+//        // resume testing - passed
+////        if (!$dbAuth->isLoggedIn() || $dbAuth->isSuspended()) {
+////            $dbAuth->resume();
+////        }
+//
+//        // logout testing - passed
+////        $dbAuth->logout();
+//
+//        // destroy uuid - passed
+////        $dbAuth->destroySession('d95d2a65-2221-4e92-862a-8e1cf64ab0f6');
+//
+////        echo PHP_EOL;
+////        var_dump('logged in? ', $dbAuth->isLoggedIn());
+////        var_dump('expired? ', $dbAuth->isExpired());
+////        var_dump('suspended? ', $dbAuth->isSuspended());
+////        var_dump('none status? ', $dbAuth->isNone());
+//
+//        $validations = \Sim\Auth\Helpers\BasicAuth::parse();
+//
+//        echo json_encode(array_merge([
+//            'success' => 'It was a successful try',
+//        ], $validations, [$_SERVER['HTTP_X_API_KEY'] ?? '', \Sim\Auth\Utils\APIUtil::generateAPIKey()]));
+//    } catch (\Sim\Auth\Exceptions\IncorrectPasswordException $e) {
+//        echo  $err_response($e->getMessage(), $e->getLine(), $e->getFile());
+//    } catch (\Sim\Auth\Exceptions\InvalidUserException $e) {
+//        echo  $err_response($e->getMessage(), $e->getLine(), $e->getFile());
+//    } catch (\Sim\Auth\Interfaces\IDBException $e) {
+//        echo  $err_response($e->getMessage(), $e->getLine(), $e->getFile());
+//    }
 
-    $dbAuth = new DBAuth($pdo, 'default', $cryptKeys);
-//    $admin = new DBAuth($pdo, 'admin');
+    /********************************************************************/
+
+    $apiAuth = new \Sim\Auth\APIAuth($pdo);
 
     try {
-        // add up tables from config
-//        $dbAuth->runConfig();
-
         // add role tested - passed
-//        $dbAuth->addRoleToUser(['the role name'], 'the username');
+//        $apiAuth->addRoleToUser(['the role name'], 'the username');
 
-        // test suspend time setting - passed
-//        $dbAuth->setSuspendTime(60);
-
-        // login testing - passed
-//        $dbAuth->login([
+//        $apiAuth->validate([
 //            'username' => 'the username',
-//            'password' => 'the password',
+//            'api_key' => 'the api key',
 //        ]);
 
-        // resume testing - passed
-//        if (!$dbAuth->isLoggedIn() || $dbAuth->isSuspended()) {
-//            $dbAuth->resume();
-//        }
+        // test basic authentication
+        $basic = \Sim\Auth\Helpers\BasicAuthHelper::parse();
 
-        // logout testing - passed
-//        $dbAuth->logout();
+        // test custom but conventional header named x_api_key authentication
+//        $xApi = \Sim\Auth\Helpers\APIAuthHelper::parse();
 
-        // destroy uuid - passed
-//        $dbAuth->destroySession('d95d2a65-2221-4e92-862a-8e1cf64ab0f6');
-
-//        echo PHP_EOL;
-//        var_dump('logged in? ', $dbAuth->isLoggedIn());
-//        var_dump('expired? ', $dbAuth->isExpired());
-//        var_dump('suspended? ', $dbAuth->isSuspended());
-//        var_dump('none status? ', $dbAuth->isNone());
-
-        $validations = \Sim\Auth\Helpers\BasicAuth::parse();
-
-        echo json_encode(array_merge([
-            'success' => 'It was a successful try',
-        ], $validations, [$_SERVER['HTTP_X_API_KEY'] ?? '', \Sim\Auth\Utils\APIUtil::generateAPIKey()]));
-    } catch (\Sim\Auth\Exceptions\IncorrectPasswordException $e) {
-        echo  $err_response($e->getMessage(), $e->getLine(), $e->getFile());
+        echo json_encode([
+            'api_key_ok?' => $apiAuth->validate([
+                'username' => $basic['username'],
+                'api_key' => $basic['password'],
+            ]),
+//            'api_key_only_ok?' => $apiAuth->validateAPI($xApi),
+        ]);
+    } catch (\Sim\Auth\Exceptions\IncorrectAPIKeyException $e) {
+        echo $e->getMessage();
     } catch (\Sim\Auth\Exceptions\InvalidUserException $e) {
-        echo  $err_response($e->getMessage(), $e->getLine(), $e->getFile());
+        echo $e->getMessage();
     } catch (\Sim\Auth\Interfaces\IDBException $e) {
-        echo  $err_response($e->getMessage(), $e->getLine(), $e->getFile());
+        echo $e->getMessage();
     }
 } catch (\Sim\Auth\Interfaces\IDBException $e) {
     echo $err_response($e->getMessage(), $e->getLine(), $e->getFile());
