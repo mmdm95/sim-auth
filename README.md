@@ -795,7 +795,7 @@ it's better to have the table's name before any column.
 
 ```php
 // for example check if user is allowed or something
-$auth->verify([
+$auth->validate([
     'username' => provided username,
     'api_key' => provided api key,
 ], 'api_keys.allowed=:allow', [
@@ -803,11 +803,11 @@ $auth->verify([
 ]);
 ```     
 
-**Note:** To get the error of verify, put it in try, catch block.
+**Note:** To get the error of validateAPI, put it in try, catch block.
 
 ```php
 try {
-    $auth->verify([
+    $auth->validate([
         'username' => provided username,
         'api_key' => provided api key,
     ]);
@@ -819,6 +819,41 @@ try {
     // do something according to error
     // eg.
     echo 'Username or api key is incorrect!';
+} catch (\Sim\Auth\Interfaces\IDBException $e) {
+    // do something according to error
+    // eg.
+    echo 'Failed database connection!';
+}
+```
+
+#### `validateAPI(string $api_key, string $extra_query = null, array $bind_values = []): bool`
+
+If there are more conditions to check for a user, you can pass them 
+by `$extra_query` parameter and it MUST be parameterized.
+
+**Note:** You should know that the verify will check inside of a 
+joined tables of `api_keys` and `roles`. So if there is a condition, 
+it's better to have the table's name before any column. 
+
+**Note:** You should quote your columns by yourself or use 
+`quoteSingleName` that explained before.
+
+```php
+// for example check if user is allowed or something
+$auth->validateAPI('provided api key', 'api_keys.allowed=:allow', [
+    'allow' => 1,
+]);
+```     
+
+**Note:** To get the error of validate, put it in try, catch block.
+
+```php
+try {
+    $auth->validateAPI('provided api key');
+} catch (\Sim\Auth\Exceptions\IncorrectAPIKeyException $e) {
+    // do something according to error
+    // eg.
+    echo 'Api key is invalid!';
 } catch (\Sim\Auth\Interfaces\IDBException $e) {
     // do something according to error
     // eg.
