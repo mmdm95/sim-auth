@@ -2,7 +2,7 @@
 
 namespace Sim\Auth\Helpers;
 
-class APIAuth
+class APIAuthHelper
 {
     /**
      * It'll return the api key

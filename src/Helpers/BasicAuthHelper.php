@@ -2,7 +2,7 @@
 
 namespace Sim\Auth\Helpers;
 
-class BasicAuth
+class BasicAuthHelper
 {
     /**
      * Returned array will be in below format:
