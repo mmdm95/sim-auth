@@ -702,6 +702,8 @@ try {
 }
 ```
 
+---
+
 ### AbstractAPIAuth
 
 Contains all of [AbstractBaseAuth][8].
