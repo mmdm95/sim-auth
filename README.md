@@ -214,7 +214,7 @@ For more info about these two keys see [this link][2]
 
 ## Shared Methods
 
-#### AbstractBaseAuth
+### AbstractBaseAuth
 
 All connections have below methods:
 
@@ -357,7 +357,7 @@ Make a role to disallow a resource with a specific permission.
 
 **Note:** You can pass role's `name` or `id`.
 
-#### AbstractAuth
+### AbstractAuth
 
 Some connections (that will say in each connection) have 
 below methods:
@@ -615,7 +615,7 @@ Quote a column or table name or anything that needed to quote.
 
 ### Usage of each connection
 
-#### `DBAuth`
+### `DBAuth`
 
 Contains all of [AbstractAuth][3] and below extra information.
 
@@ -704,7 +704,7 @@ try {
 }
 ```
 
-#### AbstractAPIAuth
+### AbstractAPIAuth
 
 Contains all of [AbstractBaseAuth][8].
 
@@ -767,7 +767,9 @@ Check if a user is admin or not.
 **Note:** You can pass user's `username` or `id` to check or pass 
 `null` or nothing to check for current user.
 
-#### `APIAuth`
+---
+
+### `APIAuth`
 
 Contains all of [AbstractAPIAuth][9] and below extra information.
 
@@ -812,10 +814,6 @@ try {
         'api_key' => provided api key,
     ]);
 } catch (\Sim\Auth\Exceptions\IncorrectAPIKeyException $e) {
-    // do something according to error
-    // eg.
-    echo 'Username or api key is incorrect!';
-} catch (\Sim\Auth\Exceptions\InvalidUserException $e) {
     // do something according to error
     // eg.
     echo 'Username or api key is incorrect!';
