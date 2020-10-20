@@ -702,6 +702,48 @@ try {
 }
 ```
 
+#### `loginWithUsername(string $username, string $extra_query = null, array $bind_values = [])`
+
+If there are more conditions to check for a user, you can pass them 
+by `$extra_query` parameter and it MUST be parameterized.
+
+**Note:** You should know that the login will check inside of a 
+joined tables of `users` and `roles`. So if there is a condition, 
+it's better to have the table's name before any column. 
+
+**Note:** You should quote your columns by yourself or use 
+`quoteSingleName` that explained before.
+
+```php
+// for example check if user is activated
+$auth->login(
+  'provided username',
+  'users.is_active=:active', 
+  [
+    'active' => 1,
+  ]
+);
+
+// to see if login has succeed
+$isLoggedIn = $auth->isLoggedIn();
+```     
+
+**Note:** To get the error of login, put it in try, catch block.
+
+```php
+try {
+    $auth->login('provided username');
+} catch (\Sim\Auth\Exceptions\InvalidUserException $e) {
+    // do something according to error
+    // eg.
+    echo 'Username or password is incorrect!';
+} catch (\Sim\Auth\Interfaces\IDBException $e) {
+    // do something according to error
+    // eg.
+    echo 'Failed database connection!';
+}
+```
+
 ---
 
 ### AbstractAPIAuth
