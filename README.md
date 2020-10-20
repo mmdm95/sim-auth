@@ -20,8 +20,6 @@ and you are good to go.
 
 ### But Wait
 
-It has some dependency libraries that do not have `autoloader` 
-and some have `autoloader` but you should `include` them yourself. 
 Why rough it when `composer` is here to help us. Please use 
 composer to enjoy this library ☻
 
