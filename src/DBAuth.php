@@ -122,4 +122,73 @@ class DBAuth extends AbstractAuth
 
         return $this;
     }
+
+    /**
+     * @param string $username
+     * @param string|null $extra_query
+     * @param array $bind_values
+     * @return static
+     * @throws IDBException
+     * @throws InvalidUserException
+     */
+    public function loginWithUsername(
+        string $username,
+        string $extra_query = null,
+        array $bind_values = []
+    )
+    {
+        if (!isset($username) || empty($username)) {
+            throw new \InvalidArgumentException('Username argument is not valid!');
+        }
+
+        // only login if status is not active
+        if ($this->getStatus() === IAuth::STATUS_ACTIVE) return $this;
+        // if there is something stored on device, then resume that user
+        if (!$this->isExpired() && !is_null($this->storage->restore())) {
+            $this->resume();
+            return $this;
+        };
+
+        $userColumns = $this->config_parser->getTablesColumn($this->users_key);
+        $userRoleColumns = $this->config_parser->getTablesColumn($this->user_role_key);
+
+        $where = "{$userColumns['username']}=:__auth_username_value__";
+        if (!empty($extra_query)) {
+            $where .= " AND ({$extra_query})";
+            $bind_values = array_merge($bind_values, [
+                '__auth_username_value__' => $username,
+            ]);
+        } else {
+            $bind_values = [
+                '__auth_username_value__' => $username,
+            ];
+        }
+
+        // get user from database
+        $user = $this->db->getFromJoin(
+            'INNER',
+            $this->tables[$this->users_key],
+            $this->tables[$this->user_role_key],
+            "{$this->db->quoteName($this->tables[$this->users_key])}.{$this->db->quoteName($userColumns['id'])}" .
+            "=" .
+            "{$this->db->quoteName($this->tables[$this->user_role_key])}.{$this->db->quoteName($userRoleColumns['user_id'])}",
+            $where,
+            $userColumns['id'],
+            $bind_values
+        );
+
+        if (count($user) !== 1) {
+            throw new InvalidUserException('User is not exists!');
+        }
+
+        $this->storage->store([
+            'username' => $username,
+            'password' => '',
+        ]);
+
+        // set verifier for storage to check user on some occasions
+        $this->storage->setVerifier($this->verifier);
+
+        return $this;
+    }
 }
