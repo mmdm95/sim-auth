@@ -6,9 +6,6 @@ use Sim\Auth\DBAuth;
 include_once '../../vendor/autoload.php';
 // or include using autoloader class of each library
 //include_once '../../autoloader.php';
-//include_once '../../vendor/mmdm/sim-crypt/autoloader.php';
-//include_once '../../vendor/mmdm/sim-session/autoloader.php';
-//include_once '../../vendor/mmdm/sim-cookie/autoloader.php';
 // other libraries included
 
 // OK this is not useful when you have a lot of library
