@@ -14,6 +14,24 @@ spl_autoload_register(function ($class) {
         "{$namespace}\\" => [
             __DIR__ . '/src',
         ],
+        "Sim\\Crypt\\" => [
+            __DIR__ . '/vendor/mmdm/sim-crypt/src',
+        ],
+        "Sim\\Cookie\\" => [
+            __DIR__ . '/vendor/mmdm/sim-cookie/src',
+        ],
+        "Sim\\Session\\" => [
+            __DIR__ . '/vendor/mmdm/sim-session/src',
+        ],
+        "Jaybizzle\\CrawlerDetect\\" => [
+            __DIR__ . '/vendor/jaybizzle/crawler-detect/src',
+        ],
+        "Jenssegers\\Agent\\" => [
+            __DIR__ . '/vendor/jenssegers/agent/src',
+        ],
+        "Detection\\" => [
+            __DIR__ . '/vendor/mobiledetect/mobiledetectlib/namespaced/Detection',
+        ],
     ];
 
     foreach ($prefixes as $prefix => $dirs) {
