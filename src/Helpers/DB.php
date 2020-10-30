@@ -301,9 +301,8 @@ class DB
             $bindValues[$k] = $value;
         }
 
-        $sql = "UPDATE {$this->quoteName($table_name)} SET (" .
-            implode(',', $namedParameters) .
-            ")";
+        $sql = "UPDATE {$this->quoteName($table_name)} SET " .
+            implode(',', $namedParameters);
         if (!empty($where)) {
             $sql .= " WHERE {$where}";
         }
