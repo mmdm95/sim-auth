@@ -93,14 +93,14 @@ class DBStorage extends AbstractStorage
         if ($this->db->insert(
             $this->tables[$this->sessions_key],
             [
-                $sessionColumns['uuid'] => $uuid,
-                $sessionColumns['user_id'] => $userId,
-                $sessionColumns['ip_address'] => $ip,
-                $sessionColumns['device'] => $device,
-                $sessionColumns['browser'] => $browser,
-                $sessionColumns['platform'] => $platform,
-                $sessionColumns['expire_at'] => $expireAt,
-                $sessionColumns['created_at'] => $createdAt,
+                $this->db->quoteName($sessionColumns['uuid']) => $uuid,
+                $this->db->quoteName($sessionColumns['user_id']) => $userId,
+                $this->db->quoteName($sessionColumns['ip_address']) => $ip,
+                $this->db->quoteName($sessionColumns['device']) => $device,
+                $this->db->quoteName($sessionColumns['browser']) => $browser,
+                $this->db->quoteName($sessionColumns['platform']) => $platform,
+                $this->db->quoteName($sessionColumns['expire_at']) => $expireAt,
+                $this->db->quoteName($sessionColumns['created_at']) => $createdAt,
             ]
         )) {
             $setCookie = new SetCookie(

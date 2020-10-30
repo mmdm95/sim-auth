@@ -391,9 +391,9 @@ abstract class AbstractBaseAuth implements
             $this->db->updateIfExistsOrInsert(
                 $this->tables[$this->role_res_perm_key],
                 [
-                    $roleResPermColumns['role_id'] => $roleId,
-                    $roleResPermColumns['resource_id'] => $resourceId,
-                    $roleResPermColumns['perm_id'] => $perm,
+                    $this->db->quoteName($roleResPermColumns['role_id']) => $roleId,
+                    $this->db->quoteName($roleResPermColumns['resource_id']) => $resourceId,
+                    $this->db->quoteName($roleResPermColumns['perm_id']) => $perm,
                 ],
                 "{$this->db->quoteName($roleResPermColumns['role_id'])}=:r_id " .
                 "AND {$this->db->quoteName($roleResPermColumns['resource_id'])}=:rec_id " .

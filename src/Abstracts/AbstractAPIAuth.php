@@ -94,8 +94,8 @@ abstract class AbstractAPIAuth extends AbstractBaseAuth
                 $this->db->insert(
                     $this->tables[$this->api_key_role_key],
                     [
-                        $userRoleColumns['api_key_id'] => $userId,
-                        $userRoleColumns['role_id'] => $roleId,
+                        $this->db->quoteName($userRoleColumns['api_key_id']) => $userId,
+                        $this->db->quoteName($userRoleColumns['role_id']) => $roleId,
                     ]
                 );
             }

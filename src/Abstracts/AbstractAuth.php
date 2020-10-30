@@ -424,10 +424,10 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
                 $this->db->updateIfExistsOrInsert(
                     $this->tables[$this->user_res_perm_key],
                     [
-                        $userResPermColumns['user_id'] => $userId,
-                        $userResPermColumns['resource_id'] => $resourceId,
-                        $userResPermColumns['perm_id'] => $perm,
-                        $userResPermColumns['is_allow'] => 1,
+                        $this->db->quoteName($userResPermColumns['user_id']) => $userId,
+                        $this->db->quoteName($userResPermColumns['resource_id']) => $resourceId,
+                        $this->db->quoteName($userResPermColumns['perm_id']) => $perm,
+                        $this->db->quoteName($userResPermColumns['is_allow']) => 1,
                     ],
                     "{$this->db->quoteName($userResPermColumns['user_id'])}=:u_id " .
                     "AND {$this->db->quoteName($userResPermColumns['resource_id'])}=:rec_id " .
@@ -465,10 +465,10 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
                 $this->db->updateIfExistsOrInsert(
                     $this->tables[$this->user_res_perm_key],
                     [
-                        $userResPermColumns['user_id'] => $userId,
-                        $userResPermColumns['resource_id'] => $resourceId,
-                        $userResPermColumns['perm_id'] => $perm,
-                        $userResPermColumns['is_allow'] => 0,
+                        $this->db->quoteName($userResPermColumns['user_id']) => $userId,
+                        $this->db->quoteName($userResPermColumns['resource_id']) => $resourceId,
+                        $this->db->quoteName($userResPermColumns['perm_id']) => $perm,
+                        $this->db->quoteName($userResPermColumns['is_allow']) => 0,
                     ],
                     "{$this->db->quoteName($userResPermColumns['user_id'])}=:u_id " .
                     "AND {$this->db->quoteName($userResPermColumns['resource_id'])}=:rec_id " .
@@ -548,8 +548,8 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
                 $this->db->insert(
                     $this->tables[$this->user_role_key],
                     [
-                        $userRoleColumns['user_id'] => $userId,
-                        $userRoleColumns['role_id'] => $roleId,
+                        $this->db->quoteName($userRoleColumns['user_id']) => $userId,
+                        $this->db->quoteName($userRoleColumns['role_id']) => $roleId,
                     ]
                 );
             }
