@@ -7,6 +7,7 @@ use Sim\Auth\Config\ConfigParser;
 use Sim\Auth\Exceptions\ConfigException;
 use Sim\Auth\Interfaces\IAuth;
 use Sim\Auth\Interfaces\IDBException;
+use Sim\Auth\Utils\AuthUtil;
 use Sim\Crypt\Exceptions\CryptException;
 use Sim\Session\ISession;
 use Sim\Session\Session;
@@ -56,8 +57,9 @@ class SessionStorage extends AbstractStorage
     public function store(array $credentials)
     {
         $userId = $this->getUserID($credentials);
+        $ip = AuthUtil::getIPAddress();
 
-        $this->session->setTimed($this->exp_key, array_merge($credentials, ['id' => $userId]), $this->expire_time);
+        $this->session->setTimed($this->exp_key, array_merge($credentials, ['id' => $userId, 'ip' => $ip]), $this->expire_time);
         $this->setStatus(IAuth::STATUS_ACTIVE);
 
         $this->updateSuspendTime();
@@ -176,6 +178,10 @@ class SessionStorage extends AbstractStorage
         );
 
         if (count($user) !== 1) return false;
+
+        // check for stored ip as well
+        $ip = AuthUtil::getIPAddress();
+        if($ip !== $restoredVal['ip']) return false;
 
         $password = $user[0][$userColumns['password']];
 

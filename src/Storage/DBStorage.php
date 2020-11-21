@@ -108,6 +108,7 @@ class DBStorage extends AbstractStorage
                 json_encode([
                     'id' => $userId,
                     'uuid' => $uuid,
+                    'ip' => $ip,
                 ]),
                 time() + $this->expire_time,
                 '/',
@@ -300,22 +301,15 @@ class DBStorage extends AbstractStorage
         $user = $this->db->getFrom(
             $this->tables[$this->users_key],
             $where,
-            $userColumns['password'],
+            $userColumns['id'],
             $bindValues
         );
 
         if (count($user) !== 1) return false;
 
-        $password = $user[0][$userColumns['password']];
-
-        // if we do not have any password to verify,
-        // then we do not have any verifier
-        if (is_null($this->verifier)) return true;
-
-        // verify password with user's password in db
-        $verified = $this->verifier->verify($restoredVal['password'] ?? '', $password);
-
-        if ($verified) return true;
+        // check for stored ip as well
+        $ip = AuthUtil::getIPAddress();
+        if($ip === $restoredVal['ip']) return true;
 
         return false;
     }

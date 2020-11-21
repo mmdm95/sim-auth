@@ -7,6 +7,7 @@ use Sim\Auth\Config\ConfigParser;
 use Sim\Auth\Exceptions\ConfigException;
 use Sim\Auth\Interfaces\IAuth;
 use Sim\Auth\Interfaces\IDBException;
+use Sim\Auth\Utils\AuthUtil;
 use Sim\Cookie\Cookie;
 use Sim\Cookie\Exceptions\CookieException;
 use Sim\Cookie\Interfaces\ICookie;
@@ -56,12 +57,13 @@ class CookieStorage extends AbstractStorage
     public function store(array $credentials)
     {
         $userId = $this->getUserID($credentials);
+        $ip = AuthUtil::getIPAddress();
 
         // expire cookie
         $setCookie = new SetCookie(
             $this->exp_key,
             json_encode(
-                array_merge($credentials, ['id' => $userId])
+                array_merge($credentials, ['id' => $userId, 'ip' => $ip])
             ),
             time() + $this->expire_time,
             '/',
@@ -205,6 +207,10 @@ class CookieStorage extends AbstractStorage
         );
 
         if (count($user) !== 1) return false;
+
+        // check for stored ip as well
+        $ip = AuthUtil::getIPAddress();
+        if($ip !== $restoredVal['ip']) return false;
 
         $password = $user[0][$userColumns['password']];
 
