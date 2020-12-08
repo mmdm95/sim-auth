@@ -94,6 +94,18 @@ interface IRole
     public function getCurrentUserRole(): array;
 
     /**
+     * Check user has a specific role
+     *
+     * Note:
+     *   If [$username] parameter is null this means we point to current user
+     *
+     * @param string|int $role
+     * @param string|int|null $username
+     * @return bool
+     */
+    public function userHasRole($role, $username = null): bool;
+
+    /**
      * Add role(s) for auth
      *
      * Note:
@@ -103,7 +115,7 @@ interface IRole
      *   If [$username] parameter is null this means we point to current user
      *
      * @param array $roles
-     * @param null $username
+     * @param string|int|null $username
      * @return static
      */
     public function addRoleToUser(array $roles, $username = null);

@@ -522,6 +522,32 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
      * {@inheritdoc}
      * @throws IDBException
      */
+    public function userHasRole($role, $username = null): bool
+    {
+        // get user id
+        $userId = $this->getUserID_($username);
+        if (is_null($userId)) return false;
+        // get role id
+        $roleId = $this->getRoleID_($role);
+        if (is_null($roleId)) false;
+
+        $userRoleColumns = $this->config_parser->getTablesColumn($this->user_role_key);
+        $userRole = $this->db->count(
+            $this->tables[$this->user_role_key],
+            "{$userRoleColumns['user_id']}=:u_id AND {$userRoleColumns['role_id']}=:r_id",
+            [
+                'u_id' => $userId,
+                'r_id' => $roleId,
+            ]
+        );
+
+        return 0 !== $userRole;
+    }
+
+    /**
+     * {@inheritdoc}
+     * @throws IDBException
+     */
     public function addRoleToUser(array $roles, $username = null)
     {
         // get user id
