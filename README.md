@@ -589,6 +589,12 @@ Get a user's roles.
 
 Get current user's roles.
 
+#### `userHasRole($role, $username = null): bool`
+
+Check user has a specific role
+
+**Note:** You can pass user's `username` or `id`.
+
 #### `addRoleToUser(array $role, $username = null)`
 
 Add some roles to a user.
