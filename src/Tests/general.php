@@ -1,6 +1,7 @@
 <?php
 
 use Sim\Auth\DBAuth;
+use Sim\Auth\Interfaces\IAuth;
 
 // include with composer
 include_once '../../vendor/autoload.php';
@@ -42,6 +43,9 @@ try {
         // add up tables from config
 //        $dbAuth->runConfig();
 
+//        $dbAuth->loginWithID(1);
+//        echo $dbAuth->isAllow('home', IAuth::PERMISSION_CREATE) ? 'yes' : 'no';
+
         // add role tested - passed
 //        $dbAuth->addRoleToUser(['the role name'], 'the username');
 
@@ -65,11 +69,11 @@ try {
         // destroy uuid - passed
 //        $dbAuth->destroySession('session uuid');
 
-        echo PHP_EOL;
-        var_dump('logged in? ', $dbAuth->isLoggedIn());
-        var_dump('expired? ', $dbAuth->isExpired());
-        var_dump('suspended? ', $dbAuth->isSuspended());
-        var_dump('none status? ', $dbAuth->isNone());
+//        echo PHP_EOL;
+//        var_dump('logged in? ', $dbAuth->isLoggedIn());
+//        var_dump('expired? ', $dbAuth->isExpired());
+//        var_dump('suspended? ', $dbAuth->isSuspended());
+//        var_dump('none status? ', $dbAuth->isNone());
     } catch (\Sim\Auth\Exceptions\IncorrectPasswordException $e) {
         echo $e->getMessage();
     } catch (\Sim\Auth\Exceptions\InvalidUserException $e) {

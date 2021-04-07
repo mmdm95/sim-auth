@@ -173,8 +173,8 @@ class DB
     ): array
     {
         $columns = $this->quoteNames($columns);
-        if (is_array($columns)) {
-            $columns = implode(', ', $columns);
+        if (\is_array($columns)) {
+            $columns = \implode(', ', $columns);
         }
 
         $sql = "SELECT {$columns} FROM {$this->quoteName($table_name)}";
@@ -208,12 +208,12 @@ class DB
     ): array
     {
         $columns = $this->quoteNames($columns);
-        if (is_array($columns)) {
-            $columns = implode(', ', $columns);
+        if (\is_array($columns)) {
+            $columns = \implode(', ', $columns);
         }
 
         $sql = "SELECT {$columns} FROM {$this->quoteName($tbl1)} " .
-            strtoupper($join_type) . " JOIN {$this->quoteName($tbl2)} ON {$on}";
+            \strtoupper($join_type) . " JOIN {$this->quoteName($tbl2)} ON {$on}";
         if (!empty($where)) {
             $sql .= " WHERE {$where}";
         }
@@ -260,8 +260,8 @@ class DB
      */
     public function insert(string $table_name, array $values): bool
     {
-        $columns = array_keys($values);
-        $values = array_values($values);
+        $columns = \array_keys($values);
+        $values = \array_values($values);
 
         $namedParameters = [];
         $bindValues = [];
@@ -272,9 +272,9 @@ class DB
         }
 
         $sql = "INSERT INTO {$this->quoteName($table_name)} (" .
-            implode(', ', $columns) .
+            \implode(', ', $columns) .
             ") VALUES (" .
-            implode(', ', $namedParameters) .
+            \implode(', ', $namedParameters) .
             ") ";
 
         return $this->exe($sql, $bindValues);
@@ -302,13 +302,13 @@ class DB
         }
 
         $sql = "UPDATE {$this->quoteName($table_name)} SET " .
-            implode(',', $namedParameters);
+            \implode(',', $namedParameters);
         if (!empty($where)) {
             $sql .= " WHERE {$where}";
         }
 
         $this->pdo->beginTransaction();
-        $res = $this->exe($sql, array_merge($bindValues, $bind_values));
+        $res = $this->exe($sql, \array_merge($bindValues, $bind_values));
         if ($res) {
             $this->pdo->commit();
         } else {
@@ -406,13 +406,13 @@ class DB
      */
     public static function quoteSingleName(string $name): string
     {
-        $name = trim(explode(' AS ', $name)[0]);
-        if (false !== strpos($name, '.')) {
-            return implode(
+        $name = \trim(\explode(' AS ', $name)[0]);
+        if (false !== \strpos($name, '.')) {
+            return \implode(
                 '.',
-                array_map(
+                \array_map(
                     'self::quoteSingleName',
-                    explode('.', $name)
+                    \explode('.', $name)
                 )
             );
         }
@@ -459,17 +459,17 @@ class DB
      */
     protected function bind(\PDOStatement $stmt, $key, $val): bool
     {
-        if (is_int($val)) {
+        if (\is_int($val)) {
             return $stmt->bindValue($key, $val, PDO::PARAM_INT);
         }
-        if (is_bool($val)) {
+        if (\is_bool($val)) {
             return $stmt->bindValue($key, $val, PDO::PARAM_BOOL);
         }
-        if (is_null($val)) {
+        if (\is_null($val)) {
             return $stmt->bindValue($key, $val, PDO::PARAM_NULL);
         }
-        if (!is_scalar($val)) {
-            $type = gettype($val);
+        if (!\is_scalar($val)) {
+            $type = \gettype($val);
             throw new BindValueException(
                 "Cannot bind value of type '{$type}' to placeholder '{$key}'"
             );
@@ -488,13 +488,13 @@ class DB
             return $names;
         }
 
-        if (is_string($names) && false === strpos($names, $this->quote_arr[0])) {
+        if (\is_string($names) && false === \strpos($names, $this->quote_arr[0])) {
             return $this->quoteName($names);
         }
 
-        if (is_array($names)) {
+        if (\is_array($names)) {
             foreach ($names as &$name) {
-                if (is_string($name) && false === strpos($name, $this->quote_arr[0])) {
+                if (\is_string($name) && false === \strpos($name, $this->quote_arr[0])) {
                     $name = $this->quoteName($name);
                 }
             }
@@ -559,7 +559,7 @@ class DB
      */
     private function getCurrentDriver(): ?string
     {
-        return strtolower($this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME) ?? '');
+        return \strtolower($this->pdo->getAttribute(PDO::ATTR_DRIVER_NAME) ?? '');
     }
 
     /**

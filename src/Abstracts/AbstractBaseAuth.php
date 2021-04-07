@@ -105,7 +105,7 @@ abstract class AbstractBaseAuth implements
 
         // load default config from _Config dir
         $this->default_config = include __DIR__ . '/../_Config/config.php';
-        if (!is_null($config)) {
+        if (!\is_null($config)) {
             $this->setConfig($config);
         } else {
             $this->setConfig($this->default_config);
@@ -123,7 +123,7 @@ abstract class AbstractBaseAuth implements
     {
         if ($merge_config) {
             if (!empty($config)) {
-                $this->config = array_merge_recursive($this->default_config, $config);
+                $this->config = \array_merge_recursive($this->default_config, $config);
             }
         } else {
             $this->config = $config;
@@ -161,7 +161,7 @@ abstract class AbstractBaseAuth implements
     {
         try {
             foreach ($resources as $resourceArr) {
-                if (is_array($resourceArr)) {
+                if (\is_array($resourceArr)) {
                     $addArr = [];
 
                     foreach ($resourceArr as $column => $value) {
@@ -190,7 +190,7 @@ abstract class AbstractBaseAuth implements
         foreach ($resources as $resource) {
             // get resource id
             $resourceId = $this->getResourceID_($resource);
-            if (is_null($resourceId)) continue;
+            if (\is_null($resourceId)) continue;
 
             $this->db->delete(
                 $this->tables[$this->resources_key],
@@ -212,7 +212,7 @@ abstract class AbstractBaseAuth implements
     {
         // get resource id
         $resourceId = $this->getResourceID_($resource);
-        if (is_null($resourceId)) return false;
+        if (\is_null($resourceId)) return false;
 
         $resourceColumns = $this->config_parser->getTablesColumn($this->resources_key);
         $count = $this->db->count(
@@ -253,7 +253,7 @@ abstract class AbstractBaseAuth implements
     {
         try {
             foreach ($roles as $roleArr) {
-                if (is_array($roleArr)) {
+                if (\is_array($roleArr)) {
                     $addArr = [];
 
                     foreach ($roleArr as $column => $value) {
@@ -282,7 +282,7 @@ abstract class AbstractBaseAuth implements
         foreach ($roles as $role) {
             // get resource id
             $roleId = $this->getRoleID_($role);
-            if (is_null($roleId)) continue;
+            if (\is_null($roleId)) continue;
 
             $this->db->delete(
                 $this->tables[$this->roles_key],
@@ -305,7 +305,7 @@ abstract class AbstractBaseAuth implements
     {
         // get role id
         $roleId = $this->getRoleID_($role);
-        if (is_null($roleId)) return false;
+        if (\is_null($roleId)) return false;
 
         $roleColumns = $this->config_parser->getTablesColumn($this->roles_key);
         $count = $this->db->count(
@@ -378,16 +378,14 @@ abstract class AbstractBaseAuth implements
     {
         // get resource id
         $resourceId = $this->getResourceID_($resource);
-        if (is_null($resourceId)) return $this;
+        if (\is_null($resourceId)) return $this;
 
         // get role id
         $roleId = $this->getRoleID_($role);
-        if (is_null($roleId)) return $this;
+        if (\is_null($roleId)) return $this;
 
         $roleResPermColumns = $this->config_parser->getTablesColumn($this->role_res_perm_key);
         foreach ($permission as $perm) {
-            if (!$this->isValidPermission($perm)) continue;
-
             $this->db->updateIfExistsOrInsert(
                 $this->tables[$this->role_res_perm_key],
                 [
@@ -416,16 +414,14 @@ abstract class AbstractBaseAuth implements
     {
         // get resource id
         $resourceId = $this->getResourceID_($resource);
-        if (is_null($resourceId)) return $this;
+        if (\is_null($resourceId)) return $this;
 
         // get role id
         $roleId = $this->getRoleID_($role);
-        if (is_null($roleId)) return $this;
+        if (\is_null($roleId)) return $this;
 
         $roleResPermColumns = $this->config_parser->getTablesColumn($this->role_res_perm_key);
         foreach ($permission as $perm) {
-            if (!$this->isValidPermission($perm)) continue;
-
             $this->db->delete(
                 $this->tables[$this->role_res_perm_key],
                 "{$this->db->quoteName($roleResPermColumns['role_id'])}=:r_id " .
@@ -443,24 +439,25 @@ abstract class AbstractBaseAuth implements
 
     /**
      * @param int $resource_id
-     * @param int $permission_id
+     * @param int|array $permission_id
      * @param int $role_id
      * @return bool
      * @throws IDBException
      */
-    protected function isAllowRole_(int $resource_id, int $permission_id, int $role_id): bool
+    protected function isAllowRole_(int $resource_id, $permission_id, int $role_id): bool
     {
+        [$inArrStr, $inBindArr] = $this->createPermissionInStatement($permission_id);
+
         $roleResPermColumns = $this->config_parser->getTablesColumn($this->role_res_perm_key);
         $allowRole = $this->db->count(
-            $this->tables[$this->roles_key],
+            $this->tables[$this->role_res_perm_key],
             "{$this->db->quoteName($roleResPermColumns['role_id'])}=:r_id " .
             "AND {$this->db->quoteName($roleResPermColumns['resource_id'])}=:res_id " .
-            "AND {$this->db->quoteName($roleResPermColumns['perm_id'])}=:perm_id " .
-            [
+            "AND {$this->db->quoteName($roleResPermColumns['perm_id'])} IN {$inArrStr}",
+            \array_merge([
                 'r_id' => $role_id,
                 'res_id' => $resource_id,
-                'perm_id' => $permission_id,
-            ]);
+            ], $inBindArr));
 
         // if there is access for role
         if ($allowRole > 0) {
@@ -471,12 +468,26 @@ abstract class AbstractBaseAuth implements
     }
 
     /**
-     * @param int $permission
-     * @return bool
+     * @param $permission_id
+     * @return array
      */
-    protected function isValidPermission(int $permission): bool
+    protected function createPermissionInStatement($permission_id): array
     {
-        return in_array($permission, IAuth::PERMISSIONS);
+        $recArr = [];
+        $recBindArr = [];
+        if (\is_array($permission_id)) {
+            $counter = 1;
+            foreach ($permission_id as $id) {
+                $recArr[] = ":perm_id_" . $counter;
+                $recBindArr['perm_id_' . $counter++] = $id;
+            }
+        } else {
+            $recArr[] = ":perm_id_1";
+            $recBindArr['perm_id_1'] = $permission_id;
+        }
+        $recArrStr = '(' . \implode(',', $recArr) . ')';
+
+        return [$recArrStr, $recBindArr];
     }
 
     /**
@@ -487,16 +498,16 @@ abstract class AbstractBaseAuth implements
     protected function getResourceID_($resource): ?int
     {
         $resourceId = null;
-        if (is_int($resource)) {
+        if (\is_int($resource)) {
             $resourceId = $resource;
         } else {
             $resourceColumns = $this->config_parser->getTablesColumn($this->resources_key);
             $rec = $this->getFromResources(
                 $resourceColumns['id'],
-                "{$resourceColumns['name']}=:r",
+                "{$this->db->quoteName($resourceColumns['name'])}=:r",
                 ['r' => $resource]);
 
-            if (count($rec)) {
+            if (\count($rec)) {
                 $resourceId = $rec[0][$resourceColumns['id']];
             }
         }
@@ -512,16 +523,16 @@ abstract class AbstractBaseAuth implements
     protected function getRoleID_($role): ?int
     {
         $roleId = null;
-        if (is_int($role)) {
+        if (\is_int($role)) {
             $roleId = $role;
         } else {
             $roleColumns = $this->config_parser->getTablesColumn($this->roles_key);
             $role = $this->getFromRoles(
                 $roleColumns['id'],
-                "{$roleColumns['name']}=:r",
+                "{$this->db->quoteName($roleColumns['name'])}=:r",
                 ['r' => $role]);
 
-            if (count($role)) {
+            if (\count($role)) {
                 $roleId = $role[0][$roleColumns['id']];
             } else {
                 return null;

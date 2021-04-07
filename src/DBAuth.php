@@ -69,7 +69,7 @@ class DBAuth extends AbstractAuth
         // only login if status is not active
         if ($this->getStatus() === IAuth::STATUS_ACTIVE) return $this;
         // if there is something stored on device, then resume that user
-        if (!$this->isExpired() && !is_null($this->storage->restore())) {
+        if (!$this->isExpired() && !\is_null($this->storage->restore())) {
             $this->resume();
             return $this;
         };
@@ -80,7 +80,7 @@ class DBAuth extends AbstractAuth
         $where = "{$userColumns['username']}=:__auth_username_value__";
         if (!empty($extra_query)) {
             $where .= " AND ({$extra_query})";
-            $bind_values = array_merge($bind_values, [
+            $bind_values = \array_merge($bind_values, [
                 '__auth_username_value__' => $credentials['username'],
             ]);
         } else {
@@ -102,7 +102,7 @@ class DBAuth extends AbstractAuth
             $bind_values
         );
 
-        if (count($user) !== 1) {
+        if (\count($user) !== 1) {
             throw new InvalidUserException('User is not exists!');
         }
 
@@ -144,7 +144,7 @@ class DBAuth extends AbstractAuth
         // only login if status is not active
         if ($this->getStatus() === IAuth::STATUS_ACTIVE) return $this;
         // if there is something stored on device, then resume that user
-        if (!$this->isExpired() && !is_null($this->storage->restore())) {
+        if (!$this->isExpired() && !\is_null($this->storage->restore())) {
             $this->resume();
             return $this;
         };
@@ -155,7 +155,7 @@ class DBAuth extends AbstractAuth
         $where = "{$userColumns['username']}=:__auth_username_value__";
         if (!empty($extra_query)) {
             $where .= " AND ({$extra_query})";
-            $bind_values = array_merge($bind_values, [
+            $bind_values = \array_merge($bind_values, [
                 '__auth_username_value__' => $username,
             ]);
         } else {
@@ -177,7 +177,7 @@ class DBAuth extends AbstractAuth
             $bind_values
         );
 
-        if (count($user) !== 1) {
+        if (\count($user) !== 1) {
             throw new InvalidUserException('User is not exists!');
         }
 

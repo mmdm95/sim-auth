@@ -59,7 +59,7 @@ class SessionStorage extends AbstractStorage
         $userId = $this->getUserID($credentials);
         $ip = AuthUtil::getIPAddress();
 
-        $this->session->setTimed($this->exp_key, array_merge($credentials, ['id' => $userId, 'ip' => $ip]), $this->expire_time);
+        $this->session->setTimed($this->exp_key, \array_merge($credentials, ['id' => $userId, 'ip' => $ip]), $this->expire_time);
         $this->setStatus(IAuth::STATUS_ACTIVE);
 
         $this->updateSuspendTime();
@@ -106,7 +106,7 @@ class SessionStorage extends AbstractStorage
     public function hasExpired(): bool
     {
         $expireVal = $this->restore();
-        $res = is_null($expireVal);
+        $res = \is_null($expireVal);
 
         if (IAuth::STATUS_ACTIVE === $this->getStatus() && $res) {
             $this->setStatus(IAuth::STATUS_EXPIRE);
@@ -121,7 +121,7 @@ class SessionStorage extends AbstractStorage
     public function hasSuspended(): bool
     {
         $suspendVal = $this->session->getTimed($this->sus_key, null);
-        $res = is_null($suspendVal);
+        $res = \is_null($suspendVal);
 
         if (IAuth::STATUS_ACTIVE === $this->getStatus() && $res) {
             $this->setStatus(IAuth::STATUS_SUSPEND);
@@ -147,7 +147,7 @@ class SessionStorage extends AbstractStorage
             "{$this->db->quoteName($credentialColumns['username'])}=:u",
             $userColumns['id'],
             ['u' => $credentials['username']]);
-        if (count($user)) {
+        if (\count($user)) {
             $userId = $user[0][$userColumns['id']];
         }
 
@@ -177,7 +177,7 @@ class SessionStorage extends AbstractStorage
             $bindValues
         );
 
-        if (count($user) !== 1) return false;
+        if (\count($user) !== 1) return false;
 
         // check for stored ip as well
         $ip = AuthUtil::getIPAddress();
@@ -187,7 +187,7 @@ class SessionStorage extends AbstractStorage
 
         // if we do not have any password to verify,
         // then we do not have any verifier
-        if (is_null($this->verifier)) return true;
+        if (\is_null($this->verifier)) return true;
 
         // verify password with user's password in db
         $verified = $this->verifier->verify($restoredVal['password'] ?? '', $password);

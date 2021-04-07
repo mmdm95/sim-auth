@@ -12,11 +12,11 @@ interface IAPIAuthorizer
      *   If [$username] parameter is null this means we point to current user
      *
      * @param string|int $resource
-     * @param int $permission
+     * @param int|array $permission
      * @param string|int|null $username
      * @return bool
      */
-    public function isAllow($resource, int $permission, $username = null): bool;
+    public function isAllow($resource, $permission, $username = null): bool;
 
     /**
      * Allow access to specific permission to specific/current user

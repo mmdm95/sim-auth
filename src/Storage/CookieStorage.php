@@ -62,10 +62,10 @@ class CookieStorage extends AbstractStorage
         // expire cookie
         $setCookie = new SetCookie(
             $this->exp_key,
-            json_encode(
-                array_merge($credentials, ['id' => $userId, 'ip' => $ip])
+            \json_encode(
+                \array_merge($credentials, ['id' => $userId, 'ip' => $ip])
             ),
-            time() + $this->expire_time,
+            \time() + $this->expire_time,
             '/',
             null,
             null,
@@ -85,7 +85,7 @@ class CookieStorage extends AbstractStorage
     public function restore(): ?array
     {
         $cookieVal = $this->cookie->get($this->exp_key, null);
-        $cookieVal = json_decode($cookieVal, true);
+        $cookieVal = \json_decode($cookieVal, true);
         if (false === $cookieVal || empty($cookieVal)) {
             $cookieVal = null;
         }
@@ -117,7 +117,7 @@ class CookieStorage extends AbstractStorage
             $setCookie = new SetCookie(
                 $this->sus_key,
                 'suspend_val',
-                time() + $this->suspend_time,
+                \time() + $this->suspend_time,
                 '/',
                 null,
                 null,
@@ -135,7 +135,7 @@ class CookieStorage extends AbstractStorage
     public function hasExpired(): bool
     {
         $expireVal = $this->restore();
-        $res = is_null($expireVal);
+        $res = \is_null($expireVal);
 
         if (IAuth::STATUS_ACTIVE === $this->getStatus() && $res) {
             $this->setStatus(IAuth::STATUS_EXPIRE);
@@ -150,7 +150,7 @@ class CookieStorage extends AbstractStorage
     public function hasSuspended(): bool
     {
         $suspendVal = $this->cookie->get($this->sus_key, null);
-        $res = is_null($suspendVal);
+        $res = \is_null($suspendVal);
 
         if (IAuth::STATUS_ACTIVE === $this->getStatus() && $res) {
             $this->setStatus(IAuth::STATUS_SUSPEND);
@@ -176,7 +176,7 @@ class CookieStorage extends AbstractStorage
             "{$this->db->quoteName($credentialColumns['username'])}=:u",
             $userColumns['id'],
             ['u' => $credentials['username']]);
-        if (count($user)) {
+        if (\count($user)) {
             $userId = $user[0][$userColumns['id']];
         }
 
@@ -206,7 +206,7 @@ class CookieStorage extends AbstractStorage
             $bindValues
         );
 
-        if (count($user) !== 1) return false;
+        if (\count($user) !== 1) return false;
 
         // check for stored ip as well
         $ip = AuthUtil::getIPAddress();
@@ -216,7 +216,7 @@ class CookieStorage extends AbstractStorage
 
         // if we do not have any password to verify,
         // then we do not have any verifier
-        if (is_null($this->verifier)) return true;
+        if (\is_null($this->verifier)) return true;
 
         // verify password with user's password in db
         $verified = $this->verifier->verify($restoredVal['password'] ?? '', $password);

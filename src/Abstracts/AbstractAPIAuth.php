@@ -13,8 +13,6 @@ abstract class AbstractAPIAuth extends AbstractBaseAuth
     public function isAllow($resource, int $permission, $username = null): bool
     {
         try {
-            if (!$this->isValidPermission($permission)) return false;
-
             // get user id
             $userId = $this->getUserID_($username);
             if (is_null($userId)) return false;

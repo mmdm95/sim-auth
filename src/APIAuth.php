@@ -62,7 +62,7 @@ class APIAuth extends AbstractAPIAuth implements IAuthValidator
         $where = "{$apiColumns['username']}=:__api_auth_username_value__";
         if (!empty($extra_query)) {
             $where .= " AND ({$extra_query})";
-            $bind_values = array_merge($bind_values, [
+            $bind_values = \array_merge($bind_values, [
                 '__api_auth_username_value__' => $credentials['username'],
             ]);
         } else {
@@ -84,7 +84,7 @@ class APIAuth extends AbstractAPIAuth implements IAuthValidator
             $bind_values
         );
 
-        if (count($user) !== 1) {
+        if (\count($user) !== 1) {
             throw new InvalidUserException('User is not valid!');
         }
 
@@ -124,7 +124,7 @@ class APIAuth extends AbstractAPIAuth implements IAuthValidator
         $where = "{$apiColumns['api_key']}=:__api_auth_api_key_value__";
         if (!empty($extra_query)) {
             $where .= " AND ({$extra_query})";
-            $bind_values = array_merge($bind_values, [
+            $bind_values = \array_merge($bind_values, [
                 '__api_auth_api_key_value__' => $api_key,
             ]);
         } else {
@@ -146,7 +146,7 @@ class APIAuth extends AbstractAPIAuth implements IAuthValidator
             $bind_values
         );
 
-        if (count($user) !== 1) {
+        if (\count($user) !== 1) {
             throw new IncorrectAPIKeyException('Api key is not valid!');
         }
 

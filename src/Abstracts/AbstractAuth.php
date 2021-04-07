@@ -133,7 +133,7 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
 
         // set status to active if there is a session/cookie
         // that is set before
-        if (!is_null($this->storage->restore())) {
+        if (!\is_null($this->storage->restore())) {
             $this->storage->setStatus(IAuth::STATUS_ACTIVE);
         }
     }
@@ -290,7 +290,7 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
             ]
         );
 
-        if (count($user) !== 1) {
+        if (\count($user) !== 1) {
             throw new InvalidUserException('User is not exists!');
         }
 
@@ -338,7 +338,7 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
     {
         // get user id
         $userId = $this->getUserID_($username);
-        if (is_null($userId)) return [];
+        if (\is_null($userId)) return [];
 
         $sessionColumns = $this->config_parser->getTablesColumn($this->sessions_key);
         return $this->db->getFrom(
@@ -374,7 +374,7 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
     public function getCurrentUser(): ?array
     {
         $currentUser = $this->storage->restore();
-        if (is_null($currentUser)) return null;
+        if (\is_null($currentUser)) return null;
         return $currentUser;
     }
 
@@ -382,18 +382,16 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
      * {@inheritdoc}
      * @throws IDBException
      */
-    public function isAllow($resource, int $permission, $username = null): bool
+    public function isAllow($resource, $permission, $username = null): bool
     {
         try {
-            if (!$this->isValidPermission($permission)) return false;
-
             // get user id
             $userId = $this->getUserID_($username);
-            if (is_null($userId)) return false;
+            if (\is_null($userId)) return false;
 
             // get resource id
             $resourceId = $this->getResourceID_($resource);
-            if (is_null($resourceId)) return false;
+            if (\is_null($resourceId)) return false;
 
             return $this->isAllow_($resourceId, $permission, $userId);
         } catch (\Exception $e) {
@@ -409,16 +407,14 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
     {
         // get user id
         $userId = $this->getUserID_($username);
-        if (is_null($userId)) return $this;
+        if (\is_null($userId)) return $this;
 
         // get resource id
         $resourceId = $this->getResourceID_($resource);
-        if (is_null($resourceId)) return $this;
+        if (\is_null($resourceId)) return $this;
 
         $userResPermColumns = $this->config_parser->getTablesColumn($this->user_res_perm_key);
         foreach ($permission as $perm) {
-            if (!$this->isValidPermission($perm)) continue;
-
             if (!$this->isAllow($resource, $perm, $username)) {
 
                 $this->db->updateIfExistsOrInsert(
@@ -451,16 +447,14 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
     {
         // get user id
         $userId = $this->getUserID_($username);
-        if (is_null($userId)) return $this;
+        if (\is_null($userId)) return $this;
 
         // get resource id
         $resourceId = $this->getResourceID_($resource);
-        if (is_null($resourceId)) return $this;
+        if (\is_null($resourceId)) return $this;
 
         $userResPermColumns = $this->config_parser->getTablesColumn($this->user_res_perm_key);
         foreach ($permission as $perm) {
-            if (!$this->isValidPermission($perm)) continue;
-
             if ($this->isAllow($resource, $perm, $username)) {
                 $this->db->updateIfExistsOrInsert(
                     $this->tables[$this->user_res_perm_key],
@@ -492,7 +486,7 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
     {
         // get user id
         $userId = $this->getUserID_($username);
-        if (is_null($userId)) return [];
+        if (\is_null($userId)) return [];
 
         $roleColumns = $this->config_parser->getTablesColumn($this->roles_key);
         $userRoleColumns = $this->config_parser->getTablesColumn($this->user_role_key);
@@ -526,10 +520,10 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
     {
         // get user id
         $userId = $this->getUserID_($username);
-        if (is_null($userId)) return false;
+        if (\is_null($userId)) return false;
         // get role id
         $roleId = $this->getRoleID_($role);
-        if (is_null($roleId)) false;
+        if (\is_null($roleId)) false;
 
         $userRoleColumns = $this->config_parser->getTablesColumn($this->user_role_key);
         $userRole = $this->db->count(
@@ -552,13 +546,13 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
     {
         // get user id
         $userId = $this->getUserID_($username);
-        if (is_null($userId)) return $this;
+        if (\is_null($userId)) return $this;
 
         $userRoleColumns = $this->config_parser->getTablesColumn($this->user_role_key);
         foreach ($roles as $r) {
             // get role id
             $roleId = $this->getRoleID_($r);
-            if (is_null($roleId)) continue;
+            if (\is_null($roleId)) continue;
 
             // get user's role count
             $roleCount = $this->db->count(
@@ -592,7 +586,7 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
     {
         // get user id
         $userId = $this->getUserID_($username);
-        if (is_null($userId)) return false;
+        if (\is_null($userId)) return false;
 
         $roleColumns = $this->config_parser->getTablesColumn($this->roles_key);
         $userRoleColumns = $this->config_parser->getTablesColumn($this->user_role_key);
@@ -609,7 +603,7 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
             ]
         );
 
-        return count($userAdminRoles) > 0;
+        return \count($userAdminRoles) > 0;
     }
 
     /**
@@ -660,28 +654,29 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
 
     /**
      * @param int $resource_id
-     * @param int $permission_id
+     * @param int|array $permission_id
      * @param int $user_id
      * @return bool
      * @throws IDBException
      */
-    private function isAllow_(int $resource_id, int $permission_id, int $user_id): bool
+    private function isAllow_(int $resource_id, $permission_id, int $user_id): bool
     {
         try {
+            [$inArrStr, $inBindArr] = $this->createPermissionInStatement($permission_id);
+
             // first check for resource permission for user
             $userResPermColumns = $this->config_parser->getTablesColumn($this->user_res_perm_key);
             $allowRec = $this->db->count(
                 $this->tables[$this->user_res_perm_key],
                 "{$this->db->quoteName($userResPermColumns['user_id'])}=:u_id " .
                 "AND {$this->db->quoteName($userResPermColumns['resource_id'])}=:res_id " .
-                "AND {$this->db->quoteName($userResPermColumns['perm_id'])}=:perm_id " .
+                "AND {$this->db->quoteName($userResPermColumns['perm_id'])} IN {$inArrStr} " .
                 "AND {$this->db->quoteName($userResPermColumns['is_allow'])}=:allow",
-                [
+                \array_merge([
                     'u_id' => $user_id,
                     'res_id' => $resource_id,
-                    'perm_id' => $permission_id,
                     'allow' => 1,
-                ]);
+                ], $inBindArr));
 
             // if there is access for user
             if ($allowRec > 0) {
@@ -698,7 +693,7 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
                 ['u' => $user_id]);
 
             // if user have role
-            if (!count($userRoles)) return false;
+            if (!\count($userRoles)) return false;
 
             foreach ($userRoles as $key => $role) {
                 if ($this->isAllowRole_($resource_id, $permission_id, $role[$roleColumns['id']])) {
@@ -718,7 +713,7 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
      */
     private function isValidStorageType(int $storage_type): bool
     {
-        return in_array($storage_type, IAuth::STORAGE_TYPES);
+        return \in_array($storage_type, IAuth::STORAGE_TYPES);
     }
 
     /**
@@ -729,9 +724,9 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
     private function getUserID_($username = null): ?int
     {
         $userId = null;
-        if (is_null($username)) {
+        if (\is_null($username)) {
             $userId = $this->getCurrentUser()['id'] ?? null;
-        } elseif (is_int($username)) {
+        } elseif (\is_int($username)) {
             $userId = $username;
         } else {
             $userColumns = $this->config_parser->getTablesColumn($this->users_key);
@@ -739,7 +734,7 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
                 $userColumns['id'],
                 "{$this->db->quoteName($this->credential_columns['username'])}=:u",
                 ['u' => $username]);
-            if (count($user)) {
+            if (\count($user)) {
                 $userId = $user[0][$userColumns['id']];
             }
         }
