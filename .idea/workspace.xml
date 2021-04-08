@@ -3,16 +3,13 @@
   <component name="ChangeListManager">
     <list default="true" id="ce3044a1-97f5-4fdd-8f18-0a1c41ccd6f9" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/APIAuth.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/APIAuth.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Abstracts/AbstractAPIAuth.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Abstracts/AbstractAPIAuth.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/autoloader.php" beforeDir="false" afterPath="$PROJECT_DIR$/autoloader.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.json" beforeDir="false" afterPath="$PROJECT_DIR$/composer.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/composer.lock" beforeDir="false" afterPath="$PROJECT_DIR$/composer.lock" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Abstracts/AbstractAuth.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Abstracts/AbstractAuth.php" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/Abstracts/AbstractBaseAuth.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Abstracts/AbstractBaseAuth.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/DBAuth.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/DBAuth.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Helpers/DB.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Helpers/DB.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Interfaces/IAPIAuthorizer.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Interfaces/IAPIAuthorizer.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Storage/CookieStorage.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Storage/CookieStorage.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Storage/SessionStorage.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Storage/SessionStorage.php" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/Tests/general.php" beforeDir="false" afterPath="$PROJECT_DIR$/src/Tests/general.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Tests/general.php" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/general.php" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/Tests/index.php" beforeDir="false" afterPath="$PROJECT_DIR$/Tests/index.php" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -25,11 +22,23 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
+      <file pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/Tests/general.php">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="366">
+              <caret line="47" column="79" selection-start-line="47" selection-start-column="79" selection-end-line="47" selection-end-column="79" />
+              <folding>
+                <element signature="e#7#27#0#PHP" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/Abstracts/AbstractAuth.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="183">
-              <caret line="668" column="18" lean-forward="true" selection-start-line="668" selection-start-column="18" selection-end-line="668" selection-end-column="18" />
+            <state relative-caret-position="297">
+              <caret line="692" column="35" selection-start-line="692" selection-start-column="35" selection-end-line="692" selection-end-column="35" />
               <folding>
                 <element signature="e#38#46#0#PHP" expanded="true" />
               </folding>
@@ -37,13 +46,13 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
-        <entry file="file://$PROJECT_DIR$/src/Tests/general.php">
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/src/Abstracts/AbstractBaseAuth.php">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="237">
-              <caret line="46" column="62" selection-start-line="46" selection-start-column="62" selection-end-line="46" selection-end-column="62" />
+            <state relative-caret-position="183">
+              <caret line="448" column="85" selection-start-line="448" selection-start-column="85" selection-end-line="448" selection-end-column="85" />
               <folding>
-                <element signature="e#7#27#0#PHP" expanded="true" />
+                <element signature="e#38#46#0#PHP" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -91,8 +100,6 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
-        <option value="$PROJECT_DIR$/src/Exceptions/InvalidStorageTypeException.php" />
-        <option value="$PROJECT_DIR$/src/Interfaces/IDBException.php" />
         <option value="$PROJECT_DIR$/src/Exceptions/BindValueException.php" />
         <option value="$PROJECT_DIR$/vendor/mmdm/sim-session/composer.json" />
         <option value="$PROJECT_DIR$/src/Interfaces/IConfigException.php" />
@@ -101,7 +108,6 @@
         <option value="$PROJECT_DIR$/src/Abstracts/tmp.php" />
         <option value="$PROJECT_DIR$/draft.txt" />
         <option value="$PROJECT_DIR$/src/Interfaces/IResource.php" />
-        <option value="$PROJECT_DIR$/composer.json" />
         <option value="$PROJECT_DIR$/src/Utils/UUIDUtil.php" />
         <option value="$PROJECT_DIR$/src/Verifier.php" />
         <option value="$PROJECT_DIR$/src/Interfaces/IAuthVerifier.php" />
@@ -127,7 +133,6 @@
         <option value="$PROJECT_DIR$/src/_Config/ConfigParser.php" />
         <option value="$PROJECT_DIR$/src/Tests/index.php" />
         <option value="$PROJECT_DIR$/vendor/jaybizzle/crawler-detect/src/CrawlerDetect.php" />
-        <option value="$PROJECT_DIR$/autoloader.php" />
         <option value="$PROJECT_DIR$/src/Storage/DBStorage.php" />
         <option value="$PROJECT_DIR$/src/Interfaces/IAuthorizer.php" />
         <option value="$PROJECT_DIR$/src/Interfaces/IRole.php" />
@@ -139,9 +144,13 @@
         <option value="$PROJECT_DIR$/src/DBAuth.php" />
         <option value="$PROJECT_DIR$/src/Helpers/DB.php" />
         <option value="$PROJECT_DIR$/src/Abstracts/AbstractAPIAuth.php" />
+        <option value="$PROJECT_DIR$/src/Tests/general.php" />
+        <option value="$PROJECT_DIR$/composer.json" />
+        <option value="$PROJECT_DIR$/autoloader.php" />
+        <option value="$PROJECT_DIR$/Tests/index.php" />
         <option value="$PROJECT_DIR$/src/Abstracts/AbstractAuth.php" />
         <option value="$PROJECT_DIR$/src/Abstracts/AbstractBaseAuth.php" />
-        <option value="$PROJECT_DIR$/src/Tests/general.php" />
+        <option value="$PROJECT_DIR$/Tests/general.php" />
       </list>
     </option>
   </component>
@@ -167,7 +176,6 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -183,13 +191,13 @@
             <path>
               <item name="sim-auth" type="b2602c69:ProjectViewProjectNode" />
               <item name="sim-auth" type="462c0819:PsiDirectoryNode" />
-              <item name="src" type="462c0819:PsiDirectoryNode" />
               <item name="Tests" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -201,19 +209,19 @@
     <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
   </component>
   <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\xampp\htdocs\sim-auth\src\Helpers" />
-      <recent name="C:\xampp\htdocs\sim-auth\public" />
-      <recent name="C:\xampp\htdocs\sim-auth" />
-      <recent name="C:\xampp\htdocs\sim-auth\src\Verifiers" />
-      <recent name="C:\xampp\htdocs\sim-auth\src\_Config" />
-    </key>
     <key name="CopyFile.RECENT_KEYS">
       <recent name="C:\xampp\htdocs\sim-auth\src\Interfaces" />
       <recent name="C:\xampp\htdocs\sim-auth\src\Exceptions" />
       <recent name="C:\xampp\htdocs\sim-auth\src\Utils" />
       <recent name="C:\xampp\htdocs\sim-auth\src\Helpers" />
       <recent name="C:\xampp\htdocs\sim-auth\src\Abstracts" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\xampp\htdocs\sim-auth" />
+      <recent name="C:\xampp\htdocs\sim-auth\src\Helpers" />
+      <recent name="C:\xampp\htdocs\sim-auth\public" />
+      <recent name="C:\xampp\htdocs\sim-auth\src\Verifiers" />
+      <recent name="C:\xampp\htdocs\sim-auth\src\_Config" />
     </key>
   </component>
   <component name="RunDashboard">
@@ -280,12 +288,13 @@
       <workItem from="1608675019756" duration="48000" />
       <workItem from="1609968749640" duration="168000" />
       <workItem from="1615721760835" duration="740000" />
-      <workItem from="1617816254523" duration="10272000" />
+      <workItem from="1617816254523" duration="10464000" />
+      <workItem from="1617893606803" duration="3744000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="333088000" />
+    <option name="totallyTimeSpent" value="337024000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -301,7 +310,7 @@
     <editor active="true" />
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.21744967" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.20201342" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Docker" order="0" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="1" />
@@ -460,13 +469,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/composer.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="16" column="4" lean-forward="true" selection-start-line="16" selection-start-column="4" selection-end-line="16" selection-end-column="4" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Abstracts/AbstractStorage.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="206">
@@ -611,13 +613,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/autoloader.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="196">
-          <caret line="14" column="28" lean-forward="true" selection-start-line="14" selection-start-column="28" selection-end-line="14" selection-end-column="28" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/README.md">
       <provider selected="true" editor-type-id="split-provider[text-editor;markdown-preview-editor]">
         <state split_layout="SPLIT">
@@ -638,13 +633,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Tests/index.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="505">
-          <caret line="123" column="25" lean-forward="true" selection-start-line="123" selection-start-column="25" selection-end-line="123" selection-end-column="25" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Interfaces/IAPIAuthorizer.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="122">
@@ -659,30 +647,51 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Abstracts/AbstractBaseAuth.php">
+    <entry file="file://$PROJECT_DIR$/composer.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="320">
-          <caret line="456" column="26" lean-forward="true" selection-start-line="456" selection-start-column="26" selection-end-line="456" selection-end-column="26" />
-          <folding>
-            <element signature="e#38#46#0#PHP" expanded="true" />
-          </folding>
+        <state relative-caret-position="276">
+          <caret line="12" column="14" lean-forward="true" selection-start-line="12" selection-start-column="14" selection-end-line="12" selection-end-column="14" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/autoloader.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="322">
+          <caret line="14" column="25" lean-forward="true" selection-start-line="14" selection-start-column="25" selection-end-line="14" selection-end-column="25" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/index.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="115">
+          <caret line="5" column="16" selection-start-line="5" selection-start-column="16" selection-end-line="5" selection-end-column="16" />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/Abstracts/AbstractAuth.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="668" column="18" lean-forward="true" selection-start-line="668" selection-start-column="18" selection-end-line="668" selection-end-column="18" />
+        <state relative-caret-position="297">
+          <caret line="692" column="35" selection-start-line="692" selection-start-column="35" selection-end-line="692" selection-end-column="35" />
           <folding>
             <element signature="e#38#46#0#PHP" expanded="true" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Tests/general.php">
+    <entry file="file://$PROJECT_DIR$/src/Abstracts/AbstractBaseAuth.php">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="237">
-          <caret line="46" column="62" selection-start-line="46" selection-start-column="62" selection-end-line="46" selection-end-column="62" />
+        <state relative-caret-position="183">
+          <caret line="448" column="85" selection-start-line="448" selection-start-column="85" selection-end-line="448" selection-end-column="85" />
+          <folding>
+            <element signature="e#38#46#0#PHP" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Tests/general.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="366">
+          <caret line="47" column="79" selection-start-line="47" selection-start-column="79" selection-end-line="47" selection-end-column="79" />
           <folding>
             <element signature="e#7#27#0#PHP" expanded="true" />
           </folding>

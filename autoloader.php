@@ -14,6 +14,9 @@ spl_autoload_register(function ($class) {
         "{$namespace}\\" => [
             __DIR__ . '/src',
         ],
+        "{$namespace}\\Tests\\" => [
+            __DIR__ . '/Tests',
+        ],
         "Sim\\Crypt\\" => [
             __DIR__ . '/vendor/mmdm/sim-crypt/src',
         ],

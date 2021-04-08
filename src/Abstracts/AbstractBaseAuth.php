@@ -460,7 +460,7 @@ abstract class AbstractBaseAuth implements
             ], $inBindArr));
 
         // if there is access for role
-        if ($allowRole > 0) {
+        if ($allowRole == \count($inBindArr)) {
             return true;
         }
 

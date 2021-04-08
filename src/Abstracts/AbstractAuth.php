@@ -679,7 +679,7 @@ abstract class AbstractAuth extends AbstractBaseAuth implements
                 ], $inBindArr));
 
             // if there is access for user
-            if ($allowRec > 0) {
+            if ($allowRec == \count($inBindArr)) {
                 return true;
             }
 

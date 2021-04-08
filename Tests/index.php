@@ -3,7 +3,7 @@
 use Sim\Auth\DBAuth;
 
 // include with composer
-include_once '../../vendor/autoload.php';
+include_once '../vendor/autoload.php';
 
 $err_response = function ($message, $line, $file) {
     return json_encode([

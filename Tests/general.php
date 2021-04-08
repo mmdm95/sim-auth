@@ -4,9 +4,9 @@ use Sim\Auth\DBAuth;
 use Sim\Auth\Interfaces\IAuth;
 
 // include with composer
-include_once '../../vendor/autoload.php';
+include_once '../vendor/autoload.php';
 // or include using autoloader class of each library
-//include_once '../../autoloader.php';
+//include_once '../autoloader.php';
 // other libraries included
 
 // OK this is not useful when you have a lot of library
@@ -43,8 +43,9 @@ try {
         // add up tables from config
 //        $dbAuth->runConfig();
 
-//        $dbAuth->loginWithID(1);
-//        echo $dbAuth->isAllow('home', IAuth::PERMISSION_CREATE) ? 'yes' : 'no';
+//        echo $dbAuth
+//            ->loginWithID(1)
+//            ->isAllow('user', [IAuth::PERMISSION_CREATE, IAuth::PERMISSION_READ]) ? 'yes' : 'no';
 
         // add role tested - passed
 //        $dbAuth->addRoleToUser(['the role name'], 'the username');
@@ -113,4 +114,6 @@ try {
     echo 'Message: ' . $e->getMessage() . PHP_EOL;
     echo 'Line:' . $e->getLine() . PHP_EOL;
     echo 'File: ' . $e->getFile() . PHP_EOL;
+} catch (\Exception $e) {
+    echo $e;
 }
