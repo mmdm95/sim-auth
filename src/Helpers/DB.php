@@ -406,7 +406,9 @@ class DB
      */
     public static function quoteSingleName(string $name): string
     {
-        $name = \trim(\explode(' AS ', $name)[0]);
+        $names = array_map('trim', \explode(' AS ', $name));
+        $name = $names[0];
+        $second = isset($names[1]) ? self::$quote_arr_static[0] . $names[1] . self::$quote_arr_static[1] : '';
         if (false !== \strpos($name, '.')) {
             return \implode(
                 '.',
@@ -418,7 +420,7 @@ class DB
         }
 
         $name = str_replace(self::$quote_find_static, self::$quote_replace_static, $name);
-        return self::$quote_arr_static[0] . $name . self::$quote_arr_static[1];
+        return self::$quote_arr_static[0] . $name . self::$quote_arr_static[1] . ('' != $second  ? ' AS ' . $second : '');
     }
 
     /**
