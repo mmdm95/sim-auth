@@ -6,7 +6,6 @@ use PDO;
 use Sim\Auth\Config\ConfigParser;
 use Sim\Auth\Exceptions\ConfigException;
 use Sim\Auth\Helpers\DB;
-use Sim\Auth\Interfaces\IAuth;
 use Sim\Auth\Interfaces\IDBException;
 use Sim\Auth\Interfaces\IResource;
 use Sim\Auth\Interfaces\IRole;
