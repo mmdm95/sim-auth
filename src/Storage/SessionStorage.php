@@ -93,10 +93,13 @@ class SessionStorage extends AbstractStorage
      */
     public function updateSuspendTime()
     {
-        if (!$this->hasExpired() && $this->evaluateStorageValue()) {
-            $this->session->setTimed($this->sus_key, 'suspend_val', $this->suspend_time);
-            $this->setStatus(IAuth::STATUS_ACTIVE);
+        if ($this->hasExpired() || !$this->evaluateStorageValue()) {
+            $this->delete();
+            return $this;
         }
+
+        $this->session->setTimed($this->sus_key, 'suspend_val', $this->suspend_time);
+        $this->setStatus(IAuth::STATUS_ACTIVE);
         return $this;
     }
 
@@ -181,7 +184,7 @@ class SessionStorage extends AbstractStorage
 
         // check for stored ip as well
         $ip = AuthUtil::getIPAddress();
-        if($ip !== $restoredVal['ip']) return false;
+        if ($ip !== $restoredVal['ip']) return false;
 
         $password = $user[0][$userColumns['password']];
 

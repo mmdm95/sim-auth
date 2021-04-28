@@ -156,7 +156,10 @@ class DBStorage extends AbstractStorage
      */
     public function updateSuspendTime()
     {
-        if ($this->hasExpired() || !$this->evaluateStorageValue()) return $this;
+        if ($this->hasExpired() || !$this->evaluateStorageValue()) {
+            $this->delete();
+            return $this;
+        }
 
         $this->cookie->remove($this->sus_key);
         // suspend cookie

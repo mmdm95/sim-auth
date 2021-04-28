@@ -111,21 +111,24 @@ class CookieStorage extends AbstractStorage
      */
     public function updateSuspendTime()
     {
-        if (!$this->hasExpired() && $this->evaluateStorageValue()) {
-            $this->cookie->remove($this->sus_key);
-            // suspend cookie
-            $setCookie = new SetCookie(
-                $this->sus_key,
-                'suspend_val',
-                \time() + $this->suspend_time,
-                '/',
-                null,
-                null,
-                true
-            );
-            $this->cookie->set($setCookie);
-            $this->setStatus(IAuth::STATUS_ACTIVE);
+        if ($this->hasExpired() || !$this->evaluateStorageValue()) {
+            $this->delete();
+            return $this;
         }
+
+        $this->cookie->remove($this->sus_key);
+        // suspend cookie
+        $setCookie = new SetCookie(
+            $this->sus_key,
+            'suspend_val',
+            \time() + $this->suspend_time,
+            '/',
+            null,
+            null,
+            true
+        );
+        $this->cookie->set($setCookie);
+        $this->setStatus(IAuth::STATUS_ACTIVE);
         return $this;
     }
 
@@ -210,7 +213,7 @@ class CookieStorage extends AbstractStorage
 
         // check for stored ip as well
         $ip = AuthUtil::getIPAddress();
-        if($ip !== $restoredVal['ip']) return false;
+        if ($ip !== $restoredVal['ip']) return false;
 
         $password = $user[0][$userColumns['password']];
 

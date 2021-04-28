@@ -101,10 +101,10 @@
         <option value="$PROJECT_DIR$/composer.json" />
         <option value="$PROJECT_DIR$/autoloader.php" />
         <option value="$PROJECT_DIR$/Tests/index.php" />
-        <option value="$PROJECT_DIR$/src/Abstracts/AbstractBaseAuth.php" />
         <option value="$PROJECT_DIR$/Tests/general.php" />
-        <option value="$PROJECT_DIR$/src/Abstracts/AbstractAuth.php" />
         <option value="$PROJECT_DIR$/src/Helpers/DB.php" />
+        <option value="$PROJECT_DIR$/src/Abstracts/AbstractAuth.php" />
+        <option value="$PROJECT_DIR$/src/Abstracts/AbstractBaseAuth.php" />
       </list>
     </option>
   </component>
@@ -236,11 +236,12 @@
       <workItem from="1617893606803" duration="3960000" />
       <workItem from="1617965662664" duration="652000" />
       <workItem from="1617983881366" duration="116000" />
+      <workItem from="1617984530734" duration="186000" />
     </task>
     <servers />
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="338008000" />
+    <option name="totallyTimeSpent" value="338194000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -255,7 +256,7 @@
     <frame x="-7" y="-7" width="1550" height="838" extended-state="6" />
     <layout>
       <window_info id="Favorites" order="0" side_tool="true" />
-      <window_info content_ui="combo" id="Project" order="1" visible="true" weight="0.20738254" />
+      <window_info active="true" content_ui="combo" id="Project" order="1" visible="true" weight="0.21006711" />
       <window_info id="Structure" order="2" side_tool="true" weight="0.25" />
       <window_info anchor="bottom" id="Docker" order="0" show_stripe_button="false" />
       <window_info anchor="bottom" id="Database Changes" order="1" />
@@ -579,16 +580,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Abstracts/AbstractBaseAuth.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="183">
-          <caret line="448" column="85" selection-start-line="448" selection-start-column="85" selection-end-line="448" selection-end-column="85" />
-          <folding>
-            <element signature="e#38#46#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Tests/general.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="297">
@@ -626,20 +617,27 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/Abstracts/AbstractAuth.php">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="111">
-          <caret line="337" column="5" lean-forward="true" selection-start-line="337" selection-start-column="5" selection-end-line="337" selection-end-column="5" />
-          <folding>
-            <element signature="e#38#46#0#PHP" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/src/Helpers/DB.php">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="475">
           <caret line="422" column="122" selection-start-line="422" selection-start-column="122" selection-end-line="422" selection-end-column="122" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Abstracts/AbstractAuth.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="151">
+          <caret line="685" column="51" selection-start-line="685" selection-start-column="51" selection-end-line="685" selection-end-column="51" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/Abstracts/AbstractBaseAuth.php">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="264">
+          <caret line="384" lean-forward="true" selection-start-line="384" selection-end-line="384" />
+          <folding>
+            <element signature="e#38#46#0#PHP" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
