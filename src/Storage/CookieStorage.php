@@ -11,7 +11,6 @@ use Sim\Auth\Utils\AuthUtil;
 use Sim\Cookie\Cookie;
 use Sim\Cookie\Exceptions\CookieException;
 use Sim\Cookie\Interfaces\ICookie;
-use Sim\Cookie\SetCookie;
 use Sim\Crypt\Exceptions\CryptException;
 
 class CookieStorage extends AbstractStorage
@@ -60,18 +59,13 @@ class CookieStorage extends AbstractStorage
         $ip = AuthUtil::getIPAddress();
 
         // expire cookie
-        $setCookie = new SetCookie(
-            $this->exp_key,
-            \json_encode(
+        $this->cookie->set($this->exp_key)
+            ->setValue(\json_encode(
                 \array_merge($credentials, ['id' => $userId, 'ip' => $ip])
-            ),
-            \time() + $this->expire_time,
-            '/',
-            null,
-            null,
-            true
-        );
-        $this->cookie->set($setCookie);
+            ))
+            ->setExpiration(\time() + $this->expire_time)
+            ->setPath('/')
+            ->setHttpOnly(true);
         $this->setStatus(IAuth::STATUS_ACTIVE);
 
         $this->updateSuspendTime();
@@ -118,16 +112,11 @@ class CookieStorage extends AbstractStorage
 
         $this->cookie->remove($this->sus_key);
         // suspend cookie
-        $setCookie = new SetCookie(
-            $this->sus_key,
-            'suspend_val',
-            \time() + $this->suspend_time,
-            '/',
-            null,
-            null,
-            true
-        );
-        $this->cookie->set($setCookie);
+        $this->cookie->set($this->sus_key)
+            ->setValue('suspend_val')
+            ->setExpiration(\time() + $this->suspend_time)
+            ->setPath('/')
+            ->setHttpOnly(true);
         $this->setStatus(IAuth::STATUS_ACTIVE);
         return $this;
     }
