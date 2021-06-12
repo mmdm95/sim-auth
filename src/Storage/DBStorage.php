@@ -110,7 +110,8 @@ class DBStorage extends AbstractStorage
                 ]))
                 ->setExpiration(time() + $this->expire_time)
                 ->setPath('/')
-                ->setHttpOnly(true);
+                ->setHttpOnly(true)
+                ->save();
             $this->setStatus(IAuth::STATUS_ACTIVE);
 
             $this->updateSuspendTime();
@@ -161,7 +162,8 @@ class DBStorage extends AbstractStorage
             ->setValue('suspend_val')
             ->setExpiration(time() + $this->suspend_time)
             ->setPath('/')
-            ->setHttpOnly(true);
+            ->setHttpOnly(true)
+            ->save();
         $this->setStatus(IAuth::STATUS_ACTIVE);
 
         return $this;
