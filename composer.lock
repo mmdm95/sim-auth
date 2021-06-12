@@ -4,20 +4,20 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "cad56372b59cefa60461167ddd40080c",
+    "content-hash": "9988f322ea1e1fdecb4115e864424705",
     "packages": [
         {
             "name": "jaybizzle/crawler-detect",
-            "version": "v1.2.105",
+            "version": "v1.2.106",
             "source": {
                 "type": "git",
                 "url": "https://github.com/JayBizzle/Crawler-Detect.git",
-                "reference": "719c1ed49224857800c3dc40838b6b761d046105"
+                "reference": "78bf6792cbf9c569dc0bf2465481978fd2ed0de9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/719c1ed49224857800c3dc40838b6b761d046105",
-                "reference": "719c1ed49224857800c3dc40838b6b761d046105",
+                "url": "https://api.github.com/repos/JayBizzle/Crawler-Detect/zipball/78bf6792cbf9c569dc0bf2465481978fd2ed0de9",
+                "reference": "78bf6792cbf9c569dc0bf2465481978fd2ed0de9",
                 "shasum": ""
             },
             "require": {
@@ -54,9 +54,9 @@
             ],
             "support": {
                 "issues": "https://github.com/JayBizzle/Crawler-Detect/issues",
-                "source": "https://github.com/JayBizzle/Crawler-Detect/tree/v1.2.105"
+                "source": "https://github.com/JayBizzle/Crawler-Detect/tree/v1.2.106"
             },
-            "time": "2021-03-03T20:55:48+00:00"
+            "time": "2021-05-24T20:30:32+00:00"
         },
         {
             "name": "jenssegers/agent",
@@ -143,16 +143,16 @@
         },
         {
             "name": "mmdm/sim-cookie",
-            "version": "v1.2.1",
+            "version": "v2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/mmdm95/sim-cookie.git",
-                "reference": "9a3b4213d3dfadb2f3e907c7e6a40b57fa5eed32"
+                "reference": "ddbf67440929b5d2a752bfa741f560c952c8bbf9"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/mmdm95/sim-cookie/zipball/9a3b4213d3dfadb2f3e907c7e6a40b57fa5eed32",
-                "reference": "9a3b4213d3dfadb2f3e907c7e6a40b57fa5eed32",
+                "url": "https://api.github.com/repos/mmdm95/sim-cookie/zipball/ddbf67440929b5d2a752bfa741f560c952c8bbf9",
+                "reference": "ddbf67440929b5d2a752bfa741f560c952c8bbf9",
                 "shasum": ""
             },
             "require": {
@@ -180,9 +180,9 @@
             "description": "A simple yet nice cookie management library",
             "support": {
                 "issues": "https://github.com/mmdm95/sim-cookie/issues",
-                "source": "https://github.com/mmdm95/sim-cookie/tree/v1.2.1"
+                "source": "https://github.com/mmdm95/sim-cookie/tree/v2.0.1"
             },
-            "time": "2021-03-25T04:26:14+00:00"
+            "time": "2021-04-04T05:38:02+00:00"
         },
         {
             "name": "mmdm/sim-crypt",

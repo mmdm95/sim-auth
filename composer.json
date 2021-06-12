@@ -22,7 +22,7 @@
     "ext-json": "*",
     "ext-openssl": "*",
     "mmdm/sim-session": "^1.0",
-    "mmdm/sim-cookie": "^1.0",
+    "mmdm/sim-cookie": "^2.0",
     "jenssegers/agent": "^2.6"
   }
 }
