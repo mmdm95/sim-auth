@@ -98,7 +98,7 @@ class DBAuth extends AbstractAuth
             "=" .
             "{$this->db->quoteName($this->tables[$this->user_role_key])}.{$this->db->quoteName($userRoleColumns['user_id'])}",
             $where,
-            $userColumns['password'],
+            "{$this->db->quoteName($this->tables[$this->users_key])}.{$this->db->quoteName($userColumns['password'])}",
             $bind_values
         );
 
@@ -173,7 +173,7 @@ class DBAuth extends AbstractAuth
             "=" .
             "{$this->db->quoteName($this->tables[$this->user_role_key])}.{$this->db->quoteName($userRoleColumns['user_id'])}",
             $where,
-            $userColumns['id'],
+            "{$this->db->quoteName($this->tables[$this->users_key])}.{$this->db->quoteName($userColumns['id'])}",
             $bind_values
         );
 
