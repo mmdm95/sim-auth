@@ -99,7 +99,8 @@ class DBAuth extends AbstractAuth
             "{$this->db->quoteName($this->tables[$this->user_role_key])}.{$this->db->quoteName($userRoleColumns['user_id'])}",
             $where,
             "{$this->db->quoteName($this->tables[$this->users_key])}.{$this->db->quoteName($userColumns['password'])}",
-            $bind_values
+            $bind_values,
+            "{$this->db->quoteName($this->tables[$this->users_key])}.{$this->db->quoteName($userColumns['id'])}"
         );
 
         if (\count($user) !== 1) {

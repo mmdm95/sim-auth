@@ -166,10 +166,10 @@ class DB
      * @throws IDBException
      */
     public function getFrom(
-        string $table_name,
+        string  $table_name,
         ?string $where = null,
-        $columns = '*',
-        array $bind_values = []
+                $columns = '*',
+        array   $bind_values = []
     ): array
     {
         $columns = $this->quoteNames($columns);
@@ -194,17 +194,19 @@ class DB
      * @param string|null $where
      * @param array|string $columns
      * @param array $bind_values
+     * @param ?string $group_by
      * @return array
      * @throws IDBException
      */
     public function getFromJoin(
-        string $join_type,
-        string $tbl1,
-        string $tbl2,
-        string $on,
+        string  $join_type,
+        string  $tbl1,
+        string  $tbl2,
+        string  $on,
         ?string $where = null,
-        $columns = '*',
-        array $bind_values = []
+                $columns = '*',
+        array   $bind_values = [],
+        ?string $group_by = null
     ): array
     {
         $columns = $this->quoteNames($columns);
@@ -216,6 +218,9 @@ class DB
             \strtoupper($join_type) . " JOIN {$this->quoteName($tbl2)} ON {$on}";
         if (!empty($where)) {
             $sql .= " WHERE {$where}";
+        }
+        if(!empty($group_by)) {
+            $sql .= " GROUP BY {$group_by}";
         }
 
         return $this->exec($sql, $bind_values)->fetchAll(PDO::FETCH_ASSOC);
@@ -420,7 +425,7 @@ class DB
         }
 
         $name = str_replace(self::$quote_find_static, self::$quote_replace_static, $name);
-        return self::$quote_arr_static[0] . $name . self::$quote_arr_static[1] . ('' != $second  ? ' AS ' . $second : '');
+        return self::$quote_arr_static[0] . $name . self::$quote_arr_static[1] . ('' != $second ? ' AS ' . $second : '');
     }
 
     /**
